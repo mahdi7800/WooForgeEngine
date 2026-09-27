@@ -244,3 +244,20 @@ class Wishlist
         }
     }
 }
+//Wishlist
+//│
+//├── __construct()
+//│
+//├── wooen_toggle_wishlist()
+//│
+//├── wooen_is_product_in_wishlist()
+//│
+//├── wooen_add_to_wishlist()
+//│
+//├── wooen_remove_from_wishlist()
+//│
+//├── wooen_get_user_wishlist()
+//│
+//├── wooen_get_user_count_wishlist()
+//│
+//└── wooen_register_hooks()
