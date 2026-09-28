@@ -4,9 +4,7 @@ if ( ! current_user_can( 'manage_options' ) ) {
 }
 
 $faq = new Faq();
-$faq->wooen_insert();
-$faq->wooen_update();
-$faq->wooen_delete();
+$faq->wooen_handle_admin_actions();
 $headers_faq = $faq->select_header();
 $faq_details_s = $faq->select_detail();
 $message = $faq->get_message();
