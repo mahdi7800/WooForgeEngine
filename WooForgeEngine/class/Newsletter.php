@@ -148,7 +148,7 @@ class Newsletter extends CRUD
      * @return void
      */
 
-    public function wooen_insert(): void
+    protected function wooen_insert(): void
     {
         // TODO: Implement wooen_insert() method.
 
@@ -171,7 +171,7 @@ class Newsletter extends CRUD
      * @return void
      */
 
-    public function wooen_delete(): void{
+    protected function wooen_delete(): void{
         // TODO: Implement wooen_delete() method.
         if ($_SERVER['REQUEST_METHOD'] == 'GET'){
             if (isset($_GET['action']) && $_GET['action']=='delete' && isset($_GET['id'])){
@@ -197,7 +197,7 @@ class Newsletter extends CRUD
      * @return void
      */
 
-    public function wooen_update(): void
+    protected function wooen_update(): void
     {
         // TODO: Implement wooen_update() method.
          if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['newsletter_id'])) {
@@ -227,7 +227,7 @@ class Newsletter extends CRUD
      * @return array|null List of newsletter subscribers.
      */
 
-    public function wooen_select(): array|null
+    protected function wooen_select(): array|null
     {
         // TODO: Implement wooen_select() method.
         $users = $this->db->get_results("SELECT * FROM {$this->table}", ARRAY_A);
@@ -253,6 +253,11 @@ class Newsletter extends CRUD
 
     public function wooen_user_count() : int {
         return (int) $this->db->get_var("SELECT COUNT(*) FROM {$this->table}");
+    }
+
+    public function wooen_select_admin(): ?array
+    {
+        return $this->wooen_select();
     }
 
     private function wooen_registerHooks(): void{
