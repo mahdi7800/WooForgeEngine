@@ -6,11 +6,8 @@ if (!current_user_can('manage_options')) {
 }
 
 $sliders = new Slider();
-$sliders->wooen_update();
-$sliders->wooen_delete();
-$sliders->wooen_insert();
-
-$home_sliders = $sliders->wooen_select();
+$sliders->wooen_handle_admin_actions();
+$home_sliders = $sliders->wooen_get_slider_to_admin();
 $message = $sliders->get_message();
 
 ?>
