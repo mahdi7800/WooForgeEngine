@@ -1,8 +1,10 @@
 <?php
+if (!current_user_can('manage_options')) {
+    return;
+}
 $newsletter = new newsletter();
-$newsletter->wooen_delete();
-$newsletter->wooen_update();
-$users = $newsletter->wooen_select();
+$newsletter->wooen_handle_admin_actions();
+$users = $newsletter->wooen_select_admin();
 $message = $newsletter->get_message();
 $count = $newsletter->wooen_user_count();
 $counter = 1;?>
