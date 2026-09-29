@@ -230,4 +230,112 @@ class utility
         }
         return 0.0;
     }
+    
+    /**
+     * Display the formatted price of a WooCommerce product.
+     *
+     * نمایش قیمت فرمت‌شده یک محصول ووکامرس.
+     *
+     * This method requires WooCommerce to be installed and active.
+     * It handles variable, sale, and regular products.
+     *
+     * این متد برای اجرا نیازمند نصب و فعال بودن ووکامرس است
+     * و محصولات متغیر، تخفیف‌خورده و عادی را مدیریت می‌کند.
+     *
+     * @param WC_Product $product                 WooCommerce product object.
+     *                                             آبجکت محصول ووکامرس.
+     * @param string     $new_price_class_html    CSS class for the current/sale price.
+     *                                             کلاس CSS برای قیمت فعلی یا تخفیف‌خورده.
+     * @param string     $old_price_class_html    CSS class for the regular/old price.
+     *                                             کلاس CSS برای قیمت اصلی/قدیمی.
+     *
+     * @return void
+     */
+    public static function wooen_get_product_price(WC_Product $product ,string $new_price_class_html= '' ,string $old_price_class_html= ''): void
+    {
+        if ($product->is_type('variable')) {
+            $min_price = $product->get_variation_price('min');
+            $max_price = $product->get_variation_price('max');
+            echo '<span class="'.esc_attr($new_price_class_html).'">' . wc_price($max_price) . '</span>';
+            if ($min_price != $max_price) {
+                echo '<span class="'.esc_attr($new_price_class_html).'">' . wc_price($max_price) . '</span>';
+            }elseif($product->is_on_sale()){
+                echo '<span class="'.esc_attr($new_price_class_html).'">' . wc_price($product->get_sale_price()) . '</span>';
+                echo '<span class="'.esc_attr($old_price_class_html).'">' . wc_price($product->get_regular_price()) . '</span>';
+            }else {
+                echo '<span class="'.esc_attr($new_price_class_html).'">' . wc_price($product->get_price()) . '</span>';
+            }
+        }
+    }
+
+
+    /**
+     * Display the out-of-stock label for a WooCommerce product.
+     *
+     * نمایش برچسب ناموجود برای یک محصول ووکامرس.
+     *
+     * This method requires WooCommerce to be installed and active.
+     *
+     * این متد برای اجرا نیازمند نصب و فعال بودن ووکامرس است.
+     *
+     * The label is displayed only when the product is out of stock.
+     *
+     * این برچسب فقط زمانی نمایش داده می‌شود که محصول ناموجود باشد.
+     *
+     * @param WC_Product $product                  WooCommerce product object.
+     *                                              آبجکت محصول ووکامرس.
+     * @param string     $product_stock_class_html CSS class for the stock label.
+     *                                              کلاس CSS برای برچسب وضعیت موجودی.
+     *
+     * @return void
+     */
+    public static function wooen_get_product_stock_label(WC_Product $product ,string $product_stock_class_html = ''): void
+    {
+        if (!$product->is_in_stock()) {
+            echo '<span class="'.esc_attr($product_stock_class_html).'">'.'ناموجود'.'</span>';
+         }
+
+    }
+    
+    /**
+     * Display the appropriate discount label for a WooCommerce product.
+     *
+     * نمایش برچسب مناسب تخفیف برای یک محصول ووکامرس.
+     *
+     * If the product has a valid discount percentage, the calculated
+     * discount percentage is displayed. Otherwise, if the product is
+     * on sale, the "فروش ویژه" label is displayed.
+     *
+     * اگر محصول دارای درصد تخفیف معتبر باشد، درصد تخفیف محاسبه‌شده
+     * نمایش داده می‌شود. در غیر این صورت، اگر محصول در حالت فروش ویژه
+     * باشد، برچسب «فروش ویژه» نمایش داده می‌شود.
+     *
+     * This method requires WooCommerce to be installed and active.
+     *
+     * این متد برای اجرا نیازمند نصب و فعال بودن ووکامرس است.
+     *
+     * @param WC_Product $product
+     *        WooCommerce product object.
+     *        آبجکت محصول ووکامرس.
+     *
+     * @param string $product_label_class_html
+     *        CSS class for the discount percentage label.
+     *        کلاس CSS برای برچسب درصد تخفیف.
+     *
+     * @param string $product__class_html
+     *        CSS class for the special-sale label.
+     *        کلاس CSS برای برچسب فروش ویژه.
+     *
+     * @return void
+     */
+    public static function wooen_get_product_discount_label(WC_Product $product , string $product_label_class_html= '' ,string $product__class_html=''): void
+    {
+        $discount_percentage = Utility::wooen_calculateDiscountPercentage($product->get_regular_price(),$product->get_sale_price());
+        if ($discount_percentage > 0) {
+            echo '<span class="'.esc_attr($product_label_class_html).'">'. 'تخفیف' .  Utility::wooen_calculateDiscountPercentage($product->get_regular_price(),$product->get_sale_price()). '%' .'</span>';
+        }elseif($product->is_on_sale()){
+            echo '<span class="'.esc_attr($product__class_html).'">فروش ویژه</span>';
+        }
+    }
+
 }
