@@ -381,4 +381,69 @@ class utility
         }
     }
 
+    
+    /**
+     * Returns the icon for a notification type.
+     * آیکون مربوط به نوع اعلان را برمی‌گرداند.
+     *
+     * @param int $type The notification type ID.
+     *                  شناسه نوع اعلان.
+     *
+     * @return string The HTML markup of the notification icon.
+     *                کد HTML آیکون اعلان.
+     */
+    public static function wooen_get_type_notif (int $type) : string {
+        if ($type) {
+            switch ($type) {
+
+                // 1 = TIME
+                case 1:
+                    $result = '<i class="bi bi-clock"></i>';
+
+                    break;
+                // 2 = NEWS WEBSITE
+                case 2:
+                    $result = '<i class="bi bi-newspaper"></i>';
+                    break;
+                // 3 = PAYMENT
+                case 3:
+                    $result = '<i class="bi bi-credit-card"></i>';
+                    break;
+                // 4 = USER
+                case 4:
+                    $result = '<i class="bi bi-person"></i>';
+                    break;
+                // 5 = ORDER
+                case 5:
+                    $result = '<i class="bi bi-bag-check"></i>';
+                    break;
+                // 6 = PRODUCT
+                case 6:
+                    $result = '<i class="bi bi-box-seam"></i>';
+                    break;
+                // 7 = COMMENT
+                case 7:
+                    $result = '<i class="bi bi-chat-dots"></i>';
+                    break;
+                // 8 = SECURITY
+                case 8:
+                    $result = '<i class="bi bi-shield-check"></i>';
+                    break;
+                // 9 = ANNOUNCEMENT
+                case 9:
+                    $result = '<i class="bi bi-megaphone"></i>';
+                    break;
+                // 10 = SYSTEM
+                case 10:
+                    $result = '<i class="bi bi-gear"></i>';
+                    break;
+                default:
+                    $result = '<i class="bi bi-bell"></i>';
+                    break;
+            }
+        }
+        return $result;
+    }
+
+    
 }
