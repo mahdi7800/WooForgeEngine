@@ -195,6 +195,18 @@ Class CoreWooForgeEngine {
         INDEX (`email`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 
+        $table_notifications =  $this->db->prefix . 'wooen_notifications';
+        $wooen_notifications = "CREATE TABLE IF NOT EXISTS `$table_notifications` (
+                                `id` int(11) NOT NULL,
+                                `title` varchar(256) NOT NULL,
+                                `message` varchar(512) NOT NULL,
+                                `slug` varchar(256) NOT NULL,
+                                `type` int(11) NOT NULL,
+                                `status` bit(1) NOT NULL DEFAULT b'1' COMMENT '1 : active , 2 : diactive',
+                                `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+                                `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         dbDelta($tns_newsletter);
         dbDelta($tns_banner);
@@ -204,6 +216,7 @@ Class CoreWooForgeEngine {
         dbDelta($tns_faq_details);
         dbDelta( $tns_verify_code);
         dbDelta($tns_validate_token);
+        dbDelta($wooen_notifications);
     }
     public function deactivation_file(): void{
 
