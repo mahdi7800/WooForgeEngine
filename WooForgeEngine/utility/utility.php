@@ -96,7 +96,50 @@ class utility
        }
        return $result_date;
     }
+    
 
+        /**
+     * Converts a date into a human-readable relative time.
+     * تاریخ را به زمان نسبی قابل‌خواندن تبدیل می‌کند.
+     *
+     * The result is displayed in Persian when the calendar is set to 'g2j'.
+     * اگر تقویم روی 'g2j' تنظیم شود، نتیجه به زبان فارسی نمایش داده می‌شود.
+     *
+     * @param string $date The date in Y-m-d H:i:s format.
+     *                     تاریخ با فرمت Y-m-d H:i:s.
+     * @param string $calendar The output language mode: 'g2g' for English or 'g2j' for Persian.
+     *                         حالت زبان خروجی: 'g2g' برای انگلیسی یا 'g2j' برای فارسی.
+     *
+     * @return string The relative time or an empty string if the date is invalid.
+     *                زمان نسبی یا رشته خالی در صورت نامعتبر بودن تاریخ.
+     */
+    
+    
+    public static function wooen_get_time_ago(string $date , string $calendar = 'g2g') :  string {
+        $created_at = date_create_from_format('Y-m-d H:i:s', $date, wp_timezone());
+
+        if (!$created_at || $created_at->format('Y-m-d H:i:s') !== $date) {
+            return '';
+        }
+        $time_ago = human_time_diff($created_at->getTimestamp(), current_datetime()->getTimestamp());
+        if ($calendar ==='g2j') {
+            $time_ago = str_replace(
+                ['weeks', 'week', 'days', 'day', 'hours', 'hour', 'minutes', 'minute', 'seconds', 'second'],
+                ['هفته', 'هفته', 'روز', 'روز', 'ساعت', 'ساعت', 'دقیقه', 'دقیقه', 'ثانیه', 'ثانیه'],
+                $time_ago
+            );
+            $result = $time_ago . ' پیش';
+
+        }elseif ($calendar ==='g2g') {
+            $result = $time_ago. ' ago';
+        }else{
+            $result = ' ';
+        }
+
+        return $result;
+    }
+
+    
     /**
      * Generates a six-digit SMS verification code.
      * یک کد تأیید شش‌رقمی برای پیامک تولید می‌کند.
