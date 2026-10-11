@@ -214,4 +214,4 @@ Class CoreWooForgeEngine {
 new CoreWooForgeEngine();
 new Newsletter();
 new Auth();
-
+new Notification ();
