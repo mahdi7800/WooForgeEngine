@@ -392,57 +392,82 @@ class utility
      * @return string The HTML markup of the notification icon.
      *                کد HTML آیکون اعلان.
      */
-    public static function wooen_get_type_notif (int $type) : string {
-        if ($type) {
-            switch ($type) {
+ public static function wooen_get_type_notif(int $type): string
+    {
+        switch ($type) {
 
-                // 1 = TIME
-                case 1:
-                    $result = '<i class="bi bi-clock"></i>';
+            // 1 = TIME
+            case 1:
+                $icon  = 'bi-clock';
+                $class = 'bg-info bg-opacity-15 text-info';
+                break;
 
-                    break;
-                // 2 = NEWS WEBSITE
-                case 2:
-                    $result = '<i class="bi bi-newspaper"></i>';
-                    break;
-                // 3 = PAYMENT
-                case 3:
-                    $result = '<i class="bi bi-credit-card"></i>';
-                    break;
-                // 4 = USER
-                case 4:
-                    $result = '<i class="bi bi-person"></i>';
-                    break;
-                // 5 = ORDER
-                case 5:
-                    $result = '<i class="bi bi-bag-check"></i>';
-                    break;
-                // 6 = PRODUCT
-                case 6:
-                    $result = '<i class="bi bi-box-seam"></i>';
-                    break;
-                // 7 = COMMENT
-                case 7:
-                    $result = '<i class="bi bi-chat-dots"></i>';
-                    break;
-                // 8 = SECURITY
-                case 8:
-                    $result = '<i class="bi bi-shield-check"></i>';
-                    break;
-                // 9 = ANNOUNCEMENT
-                case 9:
-                    $result = '<i class="bi bi-megaphone"></i>';
-                    break;
-                // 10 = SYSTEM
-                case 10:
-                    $result = '<i class="bi bi-gear"></i>';
-                    break;
-                default:
-                    $result = '<i class="bi bi-bell"></i>';
-                    break;
-            }
+            // 2 = NEWS WEBSITE
+            case 2:
+                $icon  = 'bi-newspaper';
+                $class = 'bg-primary bg-opacity-15 text-primary';
+                break;
+
+            // 3 = PAYMENT
+            case 3:
+                $icon  = 'bi-credit-card';
+                $class = 'bg-warning bg-opacity-15 text-warning';
+                break;
+
+            // 4 = USER
+            case 4:
+                $icon  = 'bi-person';
+                $class = 'bg-success bg-opacity-15 text-success';
+                break;
+
+            // 5 = ORDER
+            case 5:
+                $icon  = 'bi-bag-check';
+                $class = 'bg-success bg-opacity-15 text-success';
+                break;
+
+            // 6 = PRODUCT
+            case 6:
+                $icon  = 'bi-box-seam';
+                $class = 'bg-primary bg-opacity-15 text-primary';
+                break;
+
+            // 7 = COMMENT
+            case 7:
+                $icon  = 'bi-chat-dots';
+                $class = 'bg-info bg-opacity-15 text-info';
+                break;
+
+            // 8 = SECURITY
+            case 8:
+                $icon  = 'bi-shield-check';
+                $class = 'bg-danger bg-opacity-15 text-danger';
+                break;
+
+            // 9 = ANNOUNCEMENT
+            case 9:
+                $icon  = 'bi-megaphone';
+                $class = 'bg-warning bg-opacity-15 text-warning';
+                break;
+
+            // 10 = SYSTEM
+            case 10:
+                $icon  = 'bi-gear';
+                $class = 'bg-secondary bg-opacity-15 text-secondary';
+                break;
+
+            default:
+                $icon  = 'bi-bell';
+                $class = 'bg-secondary bg-opacity-15 text-secondary';
+                break;
         }
-        return $result;
+
+        return sprintf(
+            '<span class="icon-lg %s rounded-2 flex-shrink-0 d-inline-flex align-items-center justify-content-center"><i class="bi %s"></i></span>',
+            esc_attr($class),
+            esc_attr($icon)
+        );
+    }
     }
 
     
