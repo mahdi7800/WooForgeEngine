@@ -1,1 +1,16 @@
-<?phpclass PostExcerpt {     public static function wooen_post_excerpt(): string {	     $post_text  = get_the_excerpt();		 return mb_substr($post_text,0,200). ' ' . '....' ;     }	public static function wooen_post_excerpt_slider(): string {		$post_text  = get_the_excerpt();		return mb_substr($post_text,0,100). ' ' . '....' ;	}}
+<?php
+
+class PostExcerpt {
+     public static function wooen_post_excerpt(): string {
+	     $post_text  = get_the_excerpt();
+		 return mb_substr($post_text,0,200). ' ' . '....' ;
+     }
+	public static function wooen_post_excerpt_slider(): string {
+		$post_text  = get_the_excerpt();
+		return mb_substr($post_text,0,100). ' ' . '....' ;
+    
+   public static function wooen_message_notices_excerpt_more(string $message): string {
+         return mb_substr($message,0,29). ' ' . '....' ;
+    }
+	}
+}
