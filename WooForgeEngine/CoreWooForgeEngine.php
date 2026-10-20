@@ -93,6 +93,8 @@ Class CoreWooForgeEngine {
         wp_register_script('wooen-functions-js',WOOEN_PLUGIN_URL . 'assets/admin/js/functions.js',['jquery'],'1.3.1',true);
         wp_register_script('wooen-uikit-min-js',WOOEN_PLUGIN_URL . 'assets/admin/js/uikit.min.js',['jquery'],'3.25.21',true);
         wp_register_script('wooen-uikit-icons-min-js',WOOEN_PLUGIN_URL . 'assets/admin/js/uikit-icons.min.js',['jquery'],'3.25.21',true);
+        wp_register_script('wooen-main-js',WOOEN_PLUGIN_URL . 'assets/admin/js/main.js',['jquery'],'1.11.0',true);
+
 
         wp_enqueue_script('wooen-uikit-min-js');
         wp_enqueue_script('wooen-uikit-icons-min-js');
@@ -100,6 +102,9 @@ Class CoreWooForgeEngine {
         wp_enqueue_script('wooen-apexcharts-js');
         wp_enqueue_script('wooen-OverlayScrollbars-min-jss');
         wp_enqueue_script('wooen-functions-js');
+        wp_enqueue_script('wooen-main-js');
+
+        
     }
     public function activation_file(): void{
 
