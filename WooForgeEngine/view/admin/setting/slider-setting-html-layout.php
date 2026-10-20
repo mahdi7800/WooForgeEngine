@@ -222,20 +222,18 @@ $message = $sliders->get_message();
                             <!-- Edit -->
                             <button
                                     type="button"
-                                    class="btn btn-light btn-round mb-0"
+                                    class="btn btn-light btn-round mb-0 edit-slider-btn"
                                     data-bs-toggle="modal"
                                     data-bs-target="#edit-slider-modal"
                                     title="Edit Slider"
-
                                     data-id="<?php echo esc_attr($slider['id']); ?>"
                                     data-top-title="<?php echo esc_attr($slider['top_title']); ?>"
                                     data-main-title="<?php echo esc_attr($slider['main_title']); ?>"
                                     data-sub-title="<?php echo esc_attr($slider['sub_title']); ?>"
                                     data-p-thumbnail="<?php echo esc_attr($slider['p_thumbnail']); ?>"
-                                    data-p-image="<?php echo esc_attr($slider['p_image']); ?>">
-
+                                    data-p-image="<?php echo esc_attr($slider['p_image']); ?>"
+                            >
                                 <i class="fas fa-edit"></i>
-
                             </button>
 
                         </td>
