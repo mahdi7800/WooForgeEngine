@@ -9,7 +9,7 @@ $banners = new Banner();
 $banners->wooen_handle_admin_actions();
 $home_banners = $banners->wooen_get_banner_to_admin();
 $message = $banners->get_message();
-
+$locale = get_locale();
 ?>
 
 <style>
@@ -92,7 +92,447 @@ $message = $banners->get_message();
 
 </style>
 
+<?php if($locale === 'fa_IR') : ?>
+    <div class="wooen-banner-wrapper">
 
+        <?php if (!empty($message)) : ?>
+            <?php echo $message; ?>
+        <?php endif; ?>
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h4 class="mb-1">
+                    <?php echo esc_html(get_admin_page_title()); ?>
+                </h4>
+
+                <p class="text-muted mb-0">
+                    بنرهای وب‌سایت خود را مدیریت کنید.
+                </p>
+            </div>
+
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addBannerModal">
+
+                + افزودن بنر
+
+            </button>
+
+        </div>
+
+        <!-- Banner Table -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+
+                            <th>
+                                تصویر
+                            </th>
+
+                            <th>
+                                عنوان بنر
+                            </th>
+
+                            <th>
+                                نشانی صفحه مقصد
+                            </th>
+
+                            <th>
+                                عملیات
+                            </th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <?php if (!empty($home_banners)) : ?>
+
+                            <?php $row_number = 1; ?>
+
+                            <?php foreach ($home_banners as $banner) : ?>
+
+                                <tr>
+
+                                    <td>
+                                        <?php echo $row_number++; ?>
+                                    </td>
+
+                                    <td>
+                                        <img
+                                                src="<?php echo esc_url($banner['image_url']); ?>"
+                                                alt="تصویر بنر"
+                                                class="wooen-banner-image rounded">
+                                    </td>
+
+                                    <td>
+                                        <?php echo esc_html($banner['title']); ?>
+                                    </td>
+
+                                    <td class="wooen-banner-link">
+                                        <a
+                                                href="<?php echo esc_url($banner['link_url']); ?>"
+                                                target="_blank"
+                                                rel="noopener noreferrer">
+
+                                            <?php echo esc_html($banner['link_url']); ?>
+
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <div class="d-flex gap-2">
+
+                                            <!-- Delete -->
+                                            <a
+                                                    href="<?php echo esc_url(
+                                                        add_query_arg([
+                                                            'action' => 'delete',
+                                                            'id'     => $banner['id']
+                                                        ])
+                                                    ); ?>"
+                                                    class="btn btn-light btn-round mb-0"
+                                                    title="حذف بنر">
+
+                                                <i class="fas fa-trash"></i>
+
+                                            </a>
+
+                                            <!-- Edit -->
+                                            <button
+                                                    type="button"
+                                                    class="btn btn-light btn-round mb-0 edit-banner-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editBannerModal"
+                                                    data-id="<?php echo esc_attr($banner['id']); ?>"
+                                                    data-image="<?php echo esc_attr($banner['image_url']); ?>"
+                                                    data-title="<?php echo esc_attr($banner['title']); ?>"
+                                                    data-link="<?php echo esc_attr($banner['link_url']); ?>"
+                                                    title="ویرایش بنر">
+
+                                                <i class="fas fa-edit"></i>
+
+                                            </button>
+
+                                        </div>
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else : ?>
+
+                            <tr>
+                                <td
+                                        colspan="5"
+                                        class="text-center py-4 text-muted">
+
+                                    هنوز هیچ بنری اضافه نشده است.
+
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         Add Banner Modal
+    ========================================================= -->
+
+    <div
+            class="modal fade"
+            id="addBannerModal"
+            tabindex="-1"
+            aria-labelledby="addBannerModalLabel"
+            aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5
+                            class="modal-title"
+                            id="addBannerModalLabel">
+
+                        افزودن بنر جدید
+
+                    </h5>
+
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="بستن">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- Banner Title Guide -->
+                    <div class="alert alert-primary">
+
+                        <h6 class="alert-heading">
+                            راهنمای عنوان بنر
+                        </h6>
+
+                        <p class="mb-2">
+                            عنوان بنر از دو بخش تشکیل شده است:
+                            <strong>نام صفحه مقصد</strong>
+                            و
+                            <strong>عنوان اصلی</strong>.
+                        </p>
+
+                        <p class="mb-2">
+                            این دو بخش را با استفاده از کاراکتر
+                            <strong>|</strong>
+                            از یکدیگر جدا کنید.
+                        </p>
+
+                        <div class="small text-muted">
+                            مثال:
+                            <code>صفحه اصلی | تخفیف ویژه تابستان</code>
+                        </div>
+
+                    </div>
+
+                    <form method="post">
+
+                        <div class="row g-3">
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    نشانی تصویر
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="tns_image"
+                                        placeholder="نشانی تصویر را وارد کنید"
+                                        required>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    عنوان بنر
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="tns_title"
+                                        placeholder="عنوان بنر را وارد کنید"
+                                        required>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    نشانی صفحه مقصد
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="tns_link"
+                                        placeholder="نشانی صفحه مقصد را وارد کنید"
+                                        required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mt-4">
+
+                            <?php
+
+                            submit_button(
+                                'ذخیره بنر',
+                                'primary',
+                                'submit',
+                                false,
+                                ['class' => 'btn btn-primary']
+                            );
+
+                            wp_nonce_field(
+                                '_nonce_tns_setting_banner',
+                                '_nonce_tns_setting_banner'
+                            );
+
+                            ?>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         Edit Banner Modal
+    ========================================================= -->
+
+    <div
+            class="modal fade"
+            id="editBannerModal"
+            tabindex="-1"
+            aria-labelledby="editBannerModalLabel"
+            aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h5
+                            class="modal-title"
+                            id="editBannerModalLabel">
+
+                        ویرایش بنر
+
+                    </h5>
+
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="بستن">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <form method="post">
+
+                        <input
+                                type="hidden"
+                                name="edit_id"
+                                id="edit_id">
+
+                        <div class="row g-3">
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    نشانی تصویر
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="edit_image"
+                                        id="edit_image"
+                                        placeholder="نشانی تصویر را وارد کنید"
+                                        required>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    عنوان بنر
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="edit_title"
+                                        id="edit_title"
+                                        placeholder="عنوان بنر را وارد کنید"
+                                        required>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <label class="form-label">
+                                    نشانی صفحه مقصد
+                                </label>
+
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        name="edit_link"
+                                        id="edit_link"
+                                        placeholder="نشانی صفحه مقصد را وارد کنید"
+                                        required>
+
+                            </div>
+
+                        </div>
+
+                        <div class="mt-4">
+
+                            <?php
+
+                            submit_button(
+                                'ذخیره تغییرات',
+                                'primary',
+                                'edit_submit',
+                                false,
+                                ['class' => 'btn btn-primary']
+                            );
+
+                            wp_nonce_field(
+                                '_nonce_tns_edit_banner',
+                                '_nonce_tns_edit_banner'
+                            );
+
+                            ?>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+<?php else : ?>
 <div class="wooen-banner-wrapper">
 
     <?php if (!empty($message)) : ?>
@@ -590,3 +1030,4 @@ $message = $banners->get_message();
 
 </div>
 
+<?php endif;?>
