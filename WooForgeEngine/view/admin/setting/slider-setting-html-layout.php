@@ -1,589 +1,262 @@
-
 <?php
-
 if (!current_user_can('manage_options')) {
     return;
 }
 
-$sliders = new Slider();
-$sliders->wooen_handle_admin_actions();
-$home_sliders = $sliders->wooen_get_slider_to_admin();
-$message = $sliders->get_message();
+$message = '';
+$social_media_options = get_option('_shw_social_media_website', []);
 $locale = get_locale();
+// Process form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+
+    if (
+        !isset($_POST['_nonce_social_media']) ||
+        !wp_verify_nonce(
+            $_POST['_nonce_social_media'],
+            '_nonce_social_media'
+        )
+    ) {
+        $message = '
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Security validation failed!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        ';
+    } else {
+
+        $social_data = [
+            'telegram'  => sanitize_text_field($_POST['telegram-f'] ?? ''),
+            'instagram' => sanitize_text_field($_POST['instagram-f'] ?? ''),
+            'whatsapp'  => sanitize_text_field($_POST['whatsapp-f'] ?? ''),
+            'discord'   => sanitize_text_field($_POST['discord-f'] ?? ''),
+            'linkedin'  => sanitize_text_field($_POST['linkedin-f'] ?? ''),
+            'youtube'   => sanitize_text_field($_POST['youtube-f'] ?? ''),
+            'x'         => sanitize_text_field($_POST['x-f'] ?? ''),
+        ];
+
+        update_option('_shw_social_media_website', $social_data);
+
+        $social_media_options = $social_data;
+
+        $message = '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Settings saved successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        ';
+    }
+}
 ?>
+
 <style>
+    /* Full Width Admin Page */
+    .tns-social-settings {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 20px 30px 0 !important;
+        box-sizing: border-box !important;
+    }
 
-    .wooen-slider-wrapper {
+    .tns-social-settings .tns-social-card {
+        width: 100% !important;
+        max-width: none !important;
+        box-sizing: border-box !important;
+    }
+
+    .tns-social-settings .tns-social-card .card-body {
         width: 100%;
-        max-width: none;
-        margin: 0;
-        padding: 20px 20px 20px 0;
         box-sizing: border-box;
     }
 
-    .wooen-slider-wrapper *,
-    .wooen-slider-wrapper *::before,
-    .wooen-slider-wrapper *::after {
-        box-sizing: border-box;
-    }
-
-    .wooen-slider-wrapper .card {
-        width: 100%;
-        max-width: none;
-    }
-
-    .wooen-slider-wrapper .table-responsive {
+    .tns-social-settings .tns-social-card form {
         width: 100%;
     }
 
-    .wooen-slider-wrapper table {
+    .tns-social-settings .tns-social-card .row {
         width: 100%;
-        margin-bottom: 0;
+        margin-left: 0;
+        margin-right: 0;
     }
 
-    .wooen-slider-image {
-        width: 100px;
-        height: 60px;
-        object-fit: cover;
-        display: block;
+    .tns-social-settings .tns-social-card .col-12 {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
-    .wooen-slider-link {
-        word-break: break-word;
+    .tns-social-settings .form-control {
+        width: 100%;
     }
-
-    #wpbody-content {
-        padding-bottom: 40px;
-    }
-
-    @media (max-width: 782px) {
-
-        .wooen-slider-wrapper {
-            padding: 15px 10px;
-        }
-
-        .wooen-slider-wrapper .table-responsive {
-            overflow-x: auto;
-        }
-
-    }
-
 </style>
 
 <?php if ($locale === 'fa_IR') : ?>
-    <div class="wooen-slider-wrapper">
 
-        <?php echo $message; ?>
+    <div class="tns-social-settings">
 
         <!-- سربرگ صفحه -->
         <div class="d-flex justify-content-between align-items-center mb-4">
 
             <div>
-
                 <h4 class="mb-1">
                     <?php echo esc_html(get_admin_page_title()); ?>
                 </h4>
 
                 <p class="text-muted mb-0">
-                    اسلایدرهای وب‌سایت خود را مدیریت کنید.
+                    لینک شبکه‌های اجتماعی وب‌سایت خود را مدیریت کنید.
                 </p>
             </div>
 
-            <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-add-slider">
-                + افزودن اسلایدر
-            </button>
-
         </div>
 
 
-        <!-- جدول اسلایدرها -->
-        <div class="card shadow-sm border-0">
+        <!-- پیام -->
+        <?php if (!empty($message)) : ?>
+            <?php echo $message; ?>
+        <?php endif; ?>
 
-            <div class="card-body p-0">
 
-                <div class="table-responsive">
+        <!-- کارت اصلی -->
+        <div class="card border-0 shadow-sm tns-social-card">
 
-                    <table class="table table-hover align-middle mb-0">
+            <!-- سربرگ کارت -->
+            <div class="card-header bg-white border-bottom py-3">
 
-                        <thead class="table-dark">
+                <h5 class="mb-0">
+                    تنظیمات شبکه‌های اجتماعی
+                </h5>
 
-                        <tr>
-                            <th>#</th>
-                            <th>تصویر</th>
-                            <th>عنوان بالا</th>
-                            <th>عنوان اصلی</th>
-                            <th>زیرعنوان</th>
-                            <th>آدرس صفحه مقصد</th>
-                            <th>عملیات</th>
-                        </tr>
-
-                        </thead>
-
-                        <tbody>
-
-                        <?php if (!empty($home_sliders)) : ?>
-
-                            <?php $row_number = 1; ?>
-
-                            <?php foreach ($home_sliders as $slider) : ?>
-
-                                <tr>
-
-                                    <!-- شماره ردیف -->
-                                    <td>
-                                        <?php echo $row_number++; ?>
-                                    </td>
-
-                                    <!-- تصویر -->
-                                    <td>
-
-                                        <div class="overflow-hidden rounded"
-                                             style="width: 100px; height: 60px;">
-
-                                            <?php
-
-                                            $image_sliders = explode('++', $slider['p_image']);
-
-                                            $desktop_image_sliders = isset($image_sliders[0])
-                                                ? esc_url(trim($image_sliders[0]))
-                                                : '';
-
-                                            $mobile_image_sliders = isset($image_sliders[1])
-                                                ? esc_url(trim($image_sliders[1]))
-                                                : $desktop_image_sliders;
-
-                                            ?>
-
-                                            <img
-                                                    src="<?php echo $mobile_image_sliders; ?>"
-                                                    alt="تصویر اسلایدر"
-                                                    class="wooen-slider-image rounded"
-                                            >
-
-                                        </div>
-
-                                    </td>
-
-                                    <!-- عنوان بالا -->
-                                    <td>
-                                        <?php echo esc_html($slider['top_title']); ?>
-                                    </td>
-
-                                    <!-- عنوان اصلی -->
-                                    <td>
-                                        <?php echo esc_html($slider['main_title']); ?>
-                                    </td>
-
-                                    <!-- زیرعنوان -->
-                                    <td>
-                                        <?php echo esc_html($slider['sub_title']); ?>
-                                    </td>
-
-                                    <!-- آدرس صفحه مقصد -->
-                                    <td>
-
-                                        <a href="<?php echo esc_url($slider['p_thumbnail']); ?>"
-                                           target="_blank"
-                                           rel="noopener noreferrer">
-
-                                            <?php echo esc_html($slider['p_thumbnail']); ?>
-
-                                        </a>
-
-                                    </td>
-
-                                    <!-- عملیات -->
-                                    <td style="white-space: nowrap;">
-
-                                        <!-- حذف -->
-                                        <a href="<?php echo esc_url(
-                                            add_query_arg([
-                                                'action' => 'delete',
-                                                'id'     => $slider['id']
-                                            ])
-                                        ); ?>"
-                                           title="حذف اسلایدر"
-                                           class="btn btn-light btn-round mb-0">
-
-                                            <i class="fas fa-trash"></i>
-
-                                        </a>
-
-                                        <!-- ویرایش -->
-                                        <button
-                                                type="button"
-                                                class="btn btn-light btn-round mb-0 edit-slider-btn"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#edit-slider-modal"
-                                                title="ویرایش اسلایدر"
-                                                data-id="<?php echo esc_attr($slider['id']); ?>"
-                                                data-top-title="<?php echo esc_attr($slider['top_title']); ?>"
-                                                data-main-title="<?php echo esc_attr($slider['main_title']); ?>"
-                                                data-sub-title="<?php echo esc_attr($slider['sub_title']); ?>"
-                                                data-p-thumbnail="<?php echo esc_attr($slider['p_thumbnail']); ?>"
-                                                data-p-image="<?php echo esc_attr($slider['p_image']); ?>"
-                                        >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
-                                    </td>
-
-                                </tr>
-
-                            <?php endforeach; ?>
-
-                        <?php else : ?>
-
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    هنوز هیچ اسلایدری اضافه نشده است.
-                                </td>
-                            </tr>
-
-                        <?php endif; ?>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
             </div>
 
-        </div>
 
-    </div>
+            <!-- محتوای کارت -->
+            <div class="card-body p-4">
 
+                <form method="post">
 
-    <!-- ========================================================= -->
-    <!-- مودال افزودن اسلایدر -->
-    <!-- ========================================================= -->
+                    <div class="row g-4">
 
-    <div class="modal fade"
-         id="modal-add-slider"
-         tabindex="-1"
-         aria-labelledby="modalAddSliderLabel"
-         aria-hidden="true">
+                        <?php
 
-        <div class="modal-dialog modal-lg">
+                        $fields = [
 
-            <div class="modal-content">
+                            'telegram' => [
+                                'تلگرام',
+                                'telegram',
+                                'شناسه یا آدرس تلگرام خود را وارد کنید'
+                            ],
 
-                <!-- سربرگ مودال -->
-                <div class="modal-header">
+                            'instagram' => [
+                                'اینستاگرام',
+                                'instagram',
+                                'شناسه یا آدرس اینستاگرام خود را وارد کنید'
+                            ],
 
-                    <h5 class="modal-title" id="modalAddSliderLabel">
-                        افزودن اسلایدر جدید
-                    </h5>
+                            'whatsapp' => [
+                                'واتساپ',
+                                'whatsapp',
+                                'شناسه یا آدرس واتساپ خود را وارد کنید'
+                            ],
 
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="بستن">
-                    </button>
+                            'discord' => [
+                                'دیسکورد',
+                                'discord',
+                                'شناسه یا آدرس دیسکورد خود را وارد کنید'
+                            ],
 
-                </div>
+                            'linkedin' => [
+                                'لینکدین',
+                                'linkedin',
+                                'شناسه یا آدرس لینکدین خود را وارد کنید'
+                            ],
 
-                <!-- محتوای مودال -->
-                <div class="modal-body">
+                            'youtube' => [
+                                'یوتیوب',
+                                'youtube',
+                                'شناسه یا آدرس یوتیوب خود را وارد کنید'
+                            ],
 
-                    <form method="post">
+                            'x' => [
+                                'ایکس (X)',
+                                'x',
+                                'شناسه یا آدرس حساب خود در X را وارد کنید'
+                            ],
 
-                        <!-- تصویر -->
-                        <div class="mb-3">
+                        ];
 
-                            <label for="tns_images" class="form-label">
-                                آدرس تصویر
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="tns_images"
-                                    id="tns_images"
-                                    placeholder="آدرس تصویر را وارد کنید"
-                                    required
-                            >
-
-                        </div>
-
-                        <!-- عنوان بالا -->
-                        <div class="mb-3">
-
-                            <label for="tns_top_title" class="form-label">
-                                عنوان بالا
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="tns_top_title"
-                                    id="tns_top_title"
-                                    placeholder="عنوان بالا را وارد کنید"
-                            >
-
-                        </div>
-
-                        <!-- عنوان اصلی -->
-                        <div class="mb-3">
-
-                            <label for="tns_main_title" class="form-label">
-                                عنوان اصلی
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="tns_main_title"
-                                    id="tns_main_title"
-                                    placeholder="عنوان اصلی را وارد کنید"
-                                    required
-                            >
-
-                        </div>
-
-                        <!-- زیرعنوان -->
-                        <div class="mb-3">
-
-                            <label for="tns_sub_title" class="form-label">
-                                زیرعنوان
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="tns_sub_title"
-                                    id="tns_sub_title"
-                                    placeholder="زیرعنوان را وارد کنید"
-                            >
-
-                        </div>
-
-                        <!-- صفحه مقصد -->
-                        <div class="mb-3">
-
-                            <label for="tns_link" class="form-label">
-                                آدرس صفحه مقصد
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="tns_link"
-                                    id="tns_link"
-                                    placeholder="آدرس صفحه مقصد را وارد کنید"
-                                    required
-                            >
-
-                        </div>
-
-                        <!-- دکمه‌های پایانی -->
-                        <div class="d-flex justify-content-end gap-2">
-
-                            <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                انصراف
-                            </button>
-
-                            <?php
-                            submit_button(
-                                'ذخیره اسلایدر',
-                                'primary',
-                                'submit',
-                                false,
-                                [
-                                    'class' => 'btn btn-primary'
-                                ]
-                            );
+                        foreach ($fields as $key => [$label, $icon, $tooltip]) :
                             ?>
 
-                        </div>
+                            <div class="col-12 col-md-6">
+
+                                <label
+                                        for="<?php echo esc_attr($key); ?>-f"
+                                        class="form-label fw-semibold"
+                                >
+                                    <?php echo esc_html($label); ?>
+                                </label>
+
+
+                                <div class="input-group">
+
+                                <span class="input-group-text bg-light">
+
+                                    <span
+                                            uk-icon="icon: <?php echo esc_attr($icon); ?>"
+                                    ></span>
+
+                                </span>
+
+
+                                    <input
+                                            class="form-control"
+                                            id="<?php echo esc_attr($key); ?>-f"
+                                            name="<?php echo esc_attr($key); ?>-f"
+                                            type="text"
+                                            value="<?php echo esc_attr(
+                                                $social_media_options[$key] ?? ''
+                                            ); ?>"
+                                            placeholder="<?php echo esc_attr($tooltip); ?>"
+                                    >
+
+                                </div>
+
+
+                                <div class="form-text">
+                                    <?php echo esc_html($tooltip); ?>
+                                </div>
+
+                            </div>
+
+                        <?php endforeach; ?>
+
+                    </div>
+
+
+                    <!-- دکمه ذخیره -->
+                    <div class="mt-4 pt-3 border-top">
 
                         <?php
                         wp_nonce_field(
-                            '_nonce_wooen_edit_slider',
-                            '_nonce_wooen_edit_slider'
+                            '_nonce_social_media',
+                            '_nonce_social_media'
                         );
                         ?>
 
-                    </form>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- ========================================================= -->
-    <!-- مودال ویرایش اسلایدر -->
-    <!-- ========================================================= -->
-
-    <div class="modal fade"
-         id="edit-slider-modal"
-         tabindex="-1"
-         aria-labelledby="editSliderModalLabel"
-         aria-hidden="true">
-
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-
-            <div class="modal-content">
-
-                <!-- سربرگ مودال -->
-                <div class="modal-header">
-
-                    <h5 class="modal-title" id="editSliderModalLabel">
-                        ویرایش اسلایدر
-                    </h5>
-
-                    <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="بستن">
-                    </button>
-
-                </div>
-
-                <!-- محتوای مودال -->
-                <div class="modal-body">
-
-                    <form method="post">
-
-                        <input
-                                type="hidden"
-                                name="edit_id"
-                                id="edit_id"
+                        <button
+                                type="submit"
+                                name="submit"
+                                class="btn btn-primary px-4"
                         >
 
-                        <!-- تصویر -->
-                        <div class="mb-3">
+                            <i class="fas fa-save me-2"></i>
 
-                            <label for="edit_tns_images" class="form-label">
-                                آدرس تصویر
-                            </label>
+                            ذخیره تنظیمات
 
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="edit_tns_images"
-                                    id="edit_tns_images"
-                                    placeholder="آدرس تصویر را وارد کنید"
-                                    required
-                            >
+                        </button>
 
-                        </div>
+                    </div>
 
-                        <!-- عنوان بالا -->
-                        <div class="mb-3">
-
-                            <label for="edit_tns_top_title" class="form-label">
-                                عنوان بالا
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="edit_tns_top_title"
-                                    id="edit_tns_top_title"
-                                    placeholder="عنوان بالا را وارد کنید"
-                            >
-
-                        </div>
-
-                        <!-- عنوان اصلی -->
-                        <div class="mb-3">
-
-                            <label for="edit_tns_main_title" class="form-label">
-                                عنوان اصلی
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="edit_tns_main_title"
-                                    id="edit_tns_main_title"
-                                    placeholder="عنوان اصلی را وارد کنید"
-                                    required
-                            >
-
-                        </div>
-
-                        <!-- زیرعنوان -->
-                        <div class="mb-3">
-
-                            <label for="edit_tns_sub_title" class="form-label">
-                                زیرعنوان
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="edit_tns_sub_title"
-                                    id="edit_tns_sub_title"
-                                    placeholder="زیرعنوان را وارد کنید"
-                            >
-
-                        </div>
-
-                        <!-- صفحه مقصد -->
-                        <div class="mb-3">
-
-                            <label for="edit_tns_link" class="form-label">
-                                آدرس صفحه مقصد
-                            </label>
-
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="edit_tns_link"
-                                    id="edit_tns_link"
-                                    placeholder="آدرس صفحه مقصد را وارد کنید"
-                                    required
-                            >
-
-                        </div>
-
-                        <!-- دکمه‌های پایانی -->
-                        <div class="d-flex justify-content-end gap-2">
-
-                            <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal">
-                                انصراف
-                            </button>
-
-                            <?php
-                            submit_button(
-                                'ذخیره تغییرات',
-                                'primary',
-                                'edit_submit',
-                                false,
-                                [
-                                    'class' => 'btn btn-primary'
-                                ]
-                            );
-                            ?>
-
-                        </div>
-
-                        <?php
-                        wp_nonce_field(
-                            '_nonce_wooen_edit_slider',
-                            '_nonce_wooen_edit_slider'
-                        );
-                        ?>
-
-                    </form>
-
-                </div>
+                </form>
 
             </div>
 
@@ -592,542 +265,176 @@ $locale = get_locale();
     </div>
 
 <?php else : ?>
-<div class="wooen-slider-wrapper">
-
-
-    <?php echo $message; ?>
+<div class="tns-social-settings">
 
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div>
-
             <h4 class="mb-1">
                 <?php echo esc_html(get_admin_page_title()); ?>
             </h4>
 
             <p class="text-muted mb-0">
-                Manage your website slider.
+                Manage your website's social media links.
             </p>
         </div>
-
-            <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modal-add-slider">
-                + Add Slider
-            </button>
 
     </div>
 
 
-    <!-- Slider Table -->
-    <div class="card shadow-sm border-0">
+    <!-- Message -->
+    <?php if (!empty($message)) : ?>
 
-        <div class="card-body p-0">
+        <?php echo $message; ?>
 
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle mb-0">
-
-            <thead class="table-dark">
-
-            <tr>
-                <th>#</th>
-                <th>Image</th>
-                <th>Top Title</th>
-                <th>Main Title</th>
-                <th>Subtitle</th>
-                <th>Landing Page URL</th>
-                <th>Actions</th>
-            </tr>
-
-            </thead>
-
-            <tbody>
-
-            <?php if (!empty($home_sliders)) : ?>
-
-                <?php $row_number = 1; ?>
-
-                <?php foreach ($home_sliders as $slider) : ?>
-
-                    <tr>
-
-                        <!-- Row Number -->
-                        <td>
-                            <?php echo $row_number++; ?>
-                        </td>
+    <?php endif; ?>
 
 
-                        <!-- Image -->
-                        <td>
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm tns-social-card">
 
-                            <div class="overflow-hidden rounded"
-                                 style="width: 100px; height: 60px;">
+        <!-- Card Header -->
+        <div class="card-header bg-white border-bottom py-3">
 
-                                <?php
+            <h5 class="mb-0">
+                Social Media Settings
+            </h5>
 
-                                $image_sliders = explode('++', $slider['p_image']);
+        </div>
 
-                                $desktop_image_sliders = isset($image_sliders[0])
-                                    ? esc_url(trim($image_sliders[0]))
-                                    : '';
 
-                                $mobile_image_sliders = isset($image_sliders[1])
-                                    ? esc_url(trim($image_sliders[1]))
-                                    : $desktop_image_sliders;
+        <!-- Card Body -->
+        <div class="card-body p-4">
 
-                                ?>
+            <form method="post">
 
-                                <img
-                                        src="<?php echo $mobile_image_sliders; ?>"
-                                        alt="Slider Image"
-                                        class="wooen-slider-image rounded"
+                <div class="row g-4">
+
+                    <?php
+
+                    $fields = [
+
+                        'telegram' => [
+                            'Telegram',
+                            'telegram',
+                            'Enter your Telegram ID or URL'
+                        ],
+
+                        'instagram' => [
+                            'Instagram',
+                            'instagram',
+                            'Enter your Instagram ID or URL'
+                        ],
+
+                        'whatsapp' => [
+                            'WhatsApp',
+                            'whatsapp',
+                            'Enter your WhatsApp ID or URL'
+                        ],
+
+                        'discord' => [
+                            'Discord',
+                            'discord',
+                            'Enter your Discord ID or URL'
+                        ],
+
+                        'linkedin' => [
+                            'LinkedIn',
+                            'linkedin',
+                            'Enter your LinkedIn ID or URL'
+                        ],
+
+                        'youtube' => [
+                            'YouTube',
+                            'youtube',
+                            'Enter your YouTube ID or URL'
+                        ],
+
+                        'x' => [
+                            'X',
+                            'x',
+                            'Enter your X ID or URL'
+                        ],
+
+                    ];
+
+                    foreach ($fields as $key => [$label, $icon, $tooltip]) :
+                        ?>
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="<?php echo esc_attr($key); ?>-f"
+                                    class="form-label fw-semibold"
+                            >
+                                <?php echo esc_html($label); ?>
+                            </label>
+
+
+                            <div class="input-group">
+
+                                <span class="input-group-text bg-light">
+
+                                    <span
+                                            uk-icon="icon: <?php echo esc_attr($icon); ?>"
+                                    ></span>
+
+                                </span>
+
+
+                                <input
+                                        class="form-control"
+                                        id="<?php echo esc_attr($key); ?>-f"
+                                        name="<?php echo esc_attr($key); ?>-f"
+                                        type="text"
+                                        value="<?php echo esc_attr(
+                                            $social_media_options[$key] ?? ''
+                                        ); ?>"
+                                        placeholder="<?php echo esc_attr($tooltip); ?>"
                                 >
 
                             </div>
 
-                        </td>
 
+                            <div class="form-text">
 
-                        <!-- Top Title -->
-                        <td>
-                            <?php echo esc_html($slider['top_title']); ?>
-                        </td>
+                                <?php echo esc_html($tooltip); ?>
 
+                            </div>
 
-                        <!-- Main Title -->
-                        <td>
-                            <?php echo esc_html($slider['main_title']); ?>
-                        </td>
+                        </div>
 
+                    <?php endforeach; ?>
 
-                        <!-- Subtitle -->
-                        <td>
-                            <?php echo esc_html($slider['sub_title']); ?>
-                        </td>
+                </div>
 
 
-                        <!-- Landing Page URL -->
-                        <td>
-
-                            <a href="<?php echo esc_url($slider['p_thumbnail']); ?>"
-                               target="_blank"
-                               rel="noopener noreferrer">
-
-                                <?php echo esc_html($slider['p_thumbnail']); ?>
-
-                            </a>
-
-                        </td>
-
-
-                        <!-- Actions -->
-                        <td style="white-space: nowrap;">
-
-                            <!-- Delete -->
-                            <a href="<?php echo esc_url(
-                                add_query_arg([
-                                    'action' => 'delete',
-                                    'id'     => $slider['id']
-                                ])
-                            ); ?>"
-                               title="Delete Slider"
-                               class="btn btn-light btn-round mb-0">
-
-                                <i class="fas fa-trash"></i>
-
-                            </a>
-
-
-                            <!-- Edit -->
-                            <button
-                                    type="button"
-                                    class="btn btn-light btn-round mb-0 edit-slider-btn"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edit-slider-modal"
-                                    title="Edit Slider"
-                                    data-id="<?php echo esc_attr($slider['id']); ?>"
-                                    data-top-title="<?php echo esc_attr($slider['top_title']); ?>"
-                                    data-main-title="<?php echo esc_attr($slider['main_title']); ?>"
-                                    data-sub-title="<?php echo esc_attr($slider['sub_title']); ?>"
-                                    data-p-thumbnail="<?php echo esc_attr($slider['p_thumbnail']); ?>"
-                                    data-p-image="<?php echo esc_attr($slider['p_image']); ?>"
-                            >
-                                <i class="fas fa-edit"></i>
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                <?php endforeach; ?>
-
-            <?php else : ?>
-
-                <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
-                        No sliders have been added yet.
-                    </td>
-                </tr>
-
-            <?php endif; ?>
-
-            </tbody>
-
-        </table>
-         </div>
-        </div>
-
-    </div>
-
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- Add Slider Modal -->
-<!-- ========================================================= -->
-
-<div class="modal fade"
-     id="modal-add-slider"
-     tabindex="-1"
-     aria-labelledby="modalAddSliderLabel"
-     aria-hidden="true">
-
-    <div class="modal-dialog modal-lg">
-
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-
-                <h5 class="modal-title" id="modalAddSliderLabel">
-                    Add New Slider
-                </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                </button>
-
-            </div>
-
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-
-                <form method="post">
-
-                    <!-- Image -->
-                    <div class="mb-3">
-
-                        <label for="tns_images" class="form-label">
-                            Image URL
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="tns_images"
-                                id="tns_images"
-                                placeholder="Enter image URL"
-                                required
-                        >
-
-                    </div>
-
-
-                    <!-- Top Title -->
-                    <div class="mb-3">
-
-                        <label for="tns_top_title" class="form-label">
-                            Top Title
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="tns_top_title"
-                                id="tns_top_title"
-                                placeholder="Enter top title"
-                        >
-
-                    </div>
-
-
-                    <!-- Main Title -->
-                    <div class="mb-3">
-
-                        <label for="tns_main_title" class="form-label">
-                            Main Title
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="tns_main_title"
-                                id="tns_main_title"
-                                placeholder="Enter main title"
-                                required
-                        >
-
-                    </div>
-
-
-                    <!-- Subtitle -->
-                    <div class="mb-3">
-
-                        <label for="tns_sub_title" class="form-label">
-                            Subtitle
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="tns_sub_title"
-                                id="tns_sub_title"
-                                placeholder="Enter subtitle"
-                        >
-
-                    </div>
-
-
-                    <!-- Landing Page -->
-                    <div class="mb-3">
-
-                        <label for="tns_link" class="form-label">
-                            Landing Page URL
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="tns_link"
-                                id="tns_link"
-                                placeholder="Enter landing page URL"
-                                required
-                        >
-
-                    </div>
-
-
-                    <!-- Footer -->
-                    <div class="d-flex justify-content-end gap-2">
-
-                        <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-
-                        <?php
-                        submit_button(
-                            'Save Slider',
-                            'primary',
-                            'submit',
-                            false,
-                            [
-                                'class' => 'btn btn-primary'
-                            ]
-                        );
-                        ?>
-
-                    </div>
-
+                <!-- Save -->
+                <div class="mt-4 pt-3 border-top">
 
                     <?php
                     wp_nonce_field(
-                        '_nonce_wooen_edit_slider',
-                        '_nonce_wooen_edit_slider'
+                        '_nonce_social_media',
+                        '_nonce_social_media'
                     );
                     ?>
 
-                </form>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ========================================================= -->
-<!-- Edit Slider Modal -->
-<!-- ========================================================= -->
-
-<div class="modal fade"
-     id="edit-slider-modal"
-     tabindex="-1"
-     aria-labelledby="editSliderModalLabel"
-     aria-hidden="true">
-
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-
-                <h5 class="modal-title" id="editSliderModalLabel">
-                    Edit Slider
-                </h5>
-
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
-                        aria-label="Close">
-                </button>
-
-            </div>
-
-
-            <!-- Modal Body -->
-            <div class="modal-body">
-
-                <form method="post">
-
-                    <input
-                            type="hidden"
-                            name="edit_id"
-                            id="edit_id"
+                    <button
+                            type="submit"
+                            name="submit"
+                            class="btn btn-primary px-4"
                     >
 
+                        <i class="fas fa-save me-2"></i>
 
-                    <!-- Image -->
-                    <div class="mb-3">
+                        Save Settings
 
-                        <label for="edit_tns_images" class="form-label">
-                            Image URL
-                        </label>
+                    </button>
 
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="edit_tns_images"
-                                id="edit_tns_images"
-                                placeholder="Enter image URL"
-                                required
-                        >
+                </div>
 
-                    </div>
-
-
-                    <!-- Top Title -->
-                    <div class="mb-3">
-
-                        <label for="edit_tns_top_title" class="form-label">
-                            Top Title
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="edit_tns_top_title"
-                                id="edit_tns_top_title"
-                                placeholder="Enter top title"
-                        >
-
-                    </div>
-
-
-                    <!-- Main Title -->
-                    <div class="mb-3">
-
-                        <label for="edit_tns_main_title" class="form-label">
-                            Main Title
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="edit_tns_main_title"
-                                id="edit_tns_main_title"
-                                placeholder="Enter main title"
-                                required
-                        >
-
-                    </div>
-
-
-                    <!-- Subtitle -->
-                    <div class="mb-3">
-
-                        <label for="edit_tns_sub_title" class="form-label">
-                            Subtitle
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="edit_tns_sub_title"
-                                id="edit_tns_sub_title"
-                                placeholder="Enter subtitle"
-                        >
-
-                    </div>
-
-
-                    <!-- Landing Page -->
-                    <div class="mb-3">
-
-                        <label for="edit_tns_link" class="form-label">
-                            Landing Page URL
-                        </label>
-
-                        <input
-                                class="form-control"
-                                type="text"
-                                name="edit_tns_link"
-                                id="edit_tns_link"
-                                placeholder="Enter landing page URL"
-                                required
-                        >
-
-                    </div>
-
-
-                    <!-- Footer -->
-                    <div class="d-flex justify-content-end gap-2">
-
-                        <button
-                                type="button"
-                                class="btn btn-secondary"
-                                data-bs-dismiss="modal">
-                            Cancel
-                        </button>
-
-                        <?php
-                        submit_button(
-                            'Save Changes',
-                            'primary',
-                            'edit_submit',
-                            false,
-                            [
-                                'class' => 'btn btn-primary'
-                            ]
-                        );
-                        ?>
-
-                    </div>
-
-
-                    <?php
-                    wp_nonce_field(
-                        '_nonce_wooen_edit_slider',
-                        '_nonce_wooen_edit_slider'
-                    );
-                    ?>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
