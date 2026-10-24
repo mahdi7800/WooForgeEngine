@@ -9,8 +9,376 @@ $headers_faq = $faq->select_header();
 $faq_details_s = $faq->select_detail();
 $message = $faq->get_message();
 $count = 1;
+$locale = get_locale();
 ?>
 
+<?php if ($locale === 'fa_IR') : ?>
+
+    <div class="uk-container">
+
+        <?php echo $message; ?>
+
+        <div class="uk-alert-primary" uk-alert>
+            <a href class="uk-alert-close" uk-close></a>
+            <p>از این بخش می‌توانید سوالات متداول مربوط به وب‌سایت خود را ایجاد و مدیریت کنید.</p>
+        </div>
+
+
+        <!-- فرم اول: ایجاد عنوان دسته‌بندی -->
+        <form method="post">
+
+            <div class="uk-margin">
+                <input
+                        class="uk-input uk-width-1-2 tnm-headers"
+                        name="tnm-headers"
+                        type="text"
+                        placeholder="عنوان یا موضوع سوالات متداول را وارد کنید."
+                        aria-label="عنوان سوالات متداول"
+                        required
+                >
+            </div>
+
+            <div class="uk-width-1-1">
+                <?php submit_button('ذخیره عنوان', 'primary', 'submit-faq-header'); ?>
+                <?php wp_nonce_field('_nonce_tnm_setting_faq', '_nonce_tnm_setting_faq'); ?>
+            </div>
+
+        </form>
+
+
+        <?php if (!empty($headers_faq)) : ?>
+
+            <form method="post">
+
+                <div class="uk-margin">
+
+                    <div uk-form-custom="target: > * > span:first-child">
+
+                        <select aria-label="انتخاب موضوع" name="faq_header_id" required>
+                            <option value="">یک موضوع انتخاب کنید</option>
+
+                            <?php foreach ($headers_faq as $header_faq) : ?>
+
+                                <option value="<?php echo intval($header_faq['ID']); ?>">
+                                    <?php echo esc_html($header_faq['header']); ?>
+                                </option>
+
+                            <?php endforeach; ?>
+
+                        </select>
+
+                        <button class="uk-button uk-button-default" type="button" tabindex="-1">
+                            <span></span>
+                            <span uk-icon="icon: chevron-down"></span>
+                        </button>
+
+                    </div>
+
+                    <a
+                            href="#edit-faq-header-modal"
+                            uk-toggle
+                            uk-tooltip="title: ویرایش عنوان"
+                            class="uk-icon-button edit-faq-btn"
+                            uk-icon="file-edit"
+                            data-id=""
+                            data-faq-question=""
+                            data-faq-answer=""
+                            data-faq-id=""
+                    ></a>
+
+                </div>
+
+
+                <div class="uk-margin">
+                    <input
+                            class="uk-input uk-form-width-large faq-question"
+                            name="faq-question"
+                            id="faq-question"
+                            type="text"
+                            placeholder="سوال خود را اینجا وارد کنید."
+                            aria-label="سوال"
+                            required
+                    >
+                </div>
+
+
+                <div class="uk-margin">
+                <textarea
+                        class="uk-textarea faq-answer"
+                        name="faq-answer"
+                        id="faq-answer"
+                        rows="5"
+                        placeholder="پاسخ سوال را اینجا وارد کنید."
+                        aria-label="پاسخ سوال"
+                        required
+                ></textarea>
+                </div>
+
+
+                <div class="uk-width-1-1">
+                    <?php submit_button('ذخیره سوال و پاسخ', 'primary', 'submit-faq-details'); ?>
+                    <?php wp_nonce_field('_nonce_tnm_setting_faq_details', '_nonce_tnm_setting_faq_details'); ?>
+                </div>
+
+            </form>
+
+        <?php endif; ?>
+
+
+        <?php if (!empty($faq_details_s)) : ?>
+
+            <table class="table align-middle p-4 mb-0 table-hover">
+
+                <thead class="table-dark">
+                <tr>
+                    <th class="border-0 rounded-start">#</th>
+                    <th class="border-0">عنوان و موضوع</th>
+                    <th class="border-0">سوال</th>
+                    <th class="border-0">پاسخ</th>
+                    <th class="border-0">عملیات</th>
+                </tr>
+                </thead>
+
+                <tbody class="border-top-0">
+
+                <?php foreach ($faq_details_s as $faq_details) : ?>
+
+                    <tr>
+
+                        <td>
+                            <?php echo $count++; ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html($faq_details['header']); ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html($faq_details['faq_question']); ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html($faq_details['faq_answer']); ?>
+                        </td>
+
+                        <td class="uk-text-right" style="white-space: nowrap;">
+
+                            <div style="display: flex; align-items: center; justify-content: flex-end; flex-direction: row-reverse;gap: 5px;">
+
+                                <!-- ویرایش سوال متداول -->
+                                <a
+                                        href="#edit-faq-modal"
+                                        uk-toggle
+                                        uk-tooltip="title: ویرایش سوال متداول"
+                                        class="btn btn-light btn-round mb-0 edit-faq-btn"
+                                        data-id="<?php echo esc_attr($faq_details['ID']); ?>"
+                                        data-faq-question="<?php echo esc_attr($faq_details['faq_question']); ?>"
+                                        data-faq-answer="<?php echo esc_attr($faq_details['faq_answer']); ?>"
+                                        data-faq-id="<?php echo esc_attr($faq_details['faq_id']); ?>"
+                                >
+
+                                    <i class="fas fa-edit"></i>
+
+                                </a>
+
+
+                                <!-- حذف سوال متداول -->
+                                <a
+                                        href="<?php echo esc_url(
+                                            add_query_arg([
+                                                'action' => 'delete_detail',
+                                                'id' => $faq_details['ID']
+                                            ])
+                                        ); ?>"
+                                        class="btn btn-light btn-round mb-0"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="حذف سوال متداول"
+                                        aria-label="حذف سوال متداول"
+                                >
+
+                                    <i class="fas fa-trash"></i>
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                <?php endforeach; ?>
+
+                </tbody>
+
+            </table>
+
+        <?php else : ?>
+
+            <div class="alert alert-info">
+                هنوز هیچ سوال متداولی ثبت نشده است.
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+
+
+
+    <!-- پنجره ویرایش سوال متداول -->
+    <div id="edit-faq-modal" uk-modal>
+
+        <div class="uk-modal-dialog uk-modal-body">
+
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+
+            <h2 class="uk-modal-title">ویرایش سوال متداول</h2>
+
+            <form method="post" class="uk-grid-small" uk-grid>
+
+                <?php wp_nonce_field('_nonce_tns_edit_faq', '_nonce_tns_edit_faq'); ?>
+
+                <input type="hidden" name="edit_id" id="edit_id">
+
+
+                <!-- انتخاب موضوع -->
+                <div class="uk-width-1-1">
+
+                    <select
+                            class="uk-select"
+                            name="faq_header_id_update"
+                            id="edit_faq_header"
+                            required
+                    >
+
+                        <option value="">انتخاب موضوع</option>
+
+                        <?php foreach ($headers_faq as $header) : ?>
+
+                            <option value="<?= intval($header['ID']); ?>">
+                                <?= esc_html($header['header']); ?>
+                            </option>
+
+                        <?php endforeach; ?>
+
+                    </select>
+
+                </div>
+
+
+                <!-- سوال -->
+                <div class="uk-width-1-1">
+
+                    <input
+                            class="uk-input"
+                            name="faq-question-update"
+                            id="faq-question-update"
+                            type="text"
+                            value=""
+                            placeholder="سوال را وارد کنید."
+                            required
+                    >
+
+                </div>
+
+
+                <!-- پاسخ -->
+                <div class="uk-width-1-1">
+
+                <textarea
+                        class="uk-textarea"
+                        name="faq-answer-update"
+                        id="faq-answer-update"
+                        rows="10"
+                        placeholder="پاسخ را وارد کنید."
+                        required
+                ></textarea>
+
+                </div>
+
+
+                <!-- دکمه ذخیره -->
+                <div class="uk-width-1-1">
+
+                    <?php submit_button('ذخیره تغییرات', 'primary', 'edit_submit_faq'); ?>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- پنجره مدیریت عناوین سوالات متداول -->
+    <div id="edit-faq-header-modal" uk-modal>
+
+        <div class="uk-modal-dialog uk-modal-body">
+
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+
+            <h2 class="uk-modal-title">موضوعات سوالات متداول</h2>
+
+            <table class="uk-table uk-table-middle uk-table-divider">
+
+                <thead>
+                <tr>
+                    <th class="uk-width-small">#</th>
+                    <th class="uk-width-small">عنوان و موضوع</th>
+                    <th>عملیات</th>
+                </tr>
+                </thead>
+
+                <?php $count = 1; ?>
+
+                <?php foreach ($headers_faq as $header_faq) : ?>
+
+                    <tbody>
+
+                    <tr>
+
+                        <td>
+                            <?php echo $count++; ?>
+                        </td>
+
+                        <td>
+                            <?php echo esc_html($header_faq['header']); ?>
+                        </td>
+
+                        <td class="uk-text-right" style="white-space: nowrap;">
+
+                            <!-- حذف موضوع -->
+                            <a
+                                    href="<?php echo esc_url(
+                                        add_query_arg([
+                                            'action' => 'delete_header',
+                                            'id' => $header_faq['ID']
+                                        ])
+                                    ); ?>"
+                                    uk-tooltip="title: حذف موضوع"
+                                    name="tns-delete-details"
+                                    class="uk-icon-button tns-delete-details"
+                                    uk-icon="trash"
+                                    style="margin-left: 5px;"
+                            ></a>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                <?php endforeach; ?>
+
+            </table>
+
+        </div>
+
+    </div>
+
+<?php else : ?>
 <div class="uk-container">
     <?php echo $message; ?>
     <div class="uk-alert-primary" uk-alert> <a href class="uk-alert-close" uk-close></a>
@@ -221,4 +589,4 @@ $count = 1;
         </table>
     </div>
 </div>
-
+<?php endif;
