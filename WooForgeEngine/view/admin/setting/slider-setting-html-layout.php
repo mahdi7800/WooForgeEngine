@@ -9,7 +9,7 @@ $sliders = new Slider();
 $sliders->wooen_handle_admin_actions();
 $home_sliders = $sliders->wooen_get_slider_to_admin();
 $message = $sliders->get_message();
-
+$locale = get_locale();
 ?>
 <style>
 
@@ -69,6 +69,529 @@ $message = $sliders->get_message();
     }
 
 </style>
+
+<?php if ($locale === 'fa_IR') : ?>
+    <div class="wooen-slider-wrapper">
+
+        <?php echo $message; ?>
+
+        <!-- سربرگ صفحه -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h4 class="mb-1">
+                    <?php echo esc_html(get_admin_page_title()); ?>
+                </h4>
+
+                <p class="text-muted mb-0">
+                    اسلایدرهای وب‌سایت خود را مدیریت کنید.
+                </p>
+            </div>
+
+            <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modal-add-slider">
+                + افزودن اسلایدر
+            </button>
+
+        </div>
+
+
+        <!-- جدول اسلایدرها -->
+        <div class="card shadow-sm border-0">
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                        <tr>
+                            <th>#</th>
+                            <th>تصویر</th>
+                            <th>عنوان بالا</th>
+                            <th>عنوان اصلی</th>
+                            <th>زیرعنوان</th>
+                            <th>آدرس صفحه مقصد</th>
+                            <th>عملیات</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        <?php if (!empty($home_sliders)) : ?>
+
+                            <?php $row_number = 1; ?>
+
+                            <?php foreach ($home_sliders as $slider) : ?>
+
+                                <tr>
+
+                                    <!-- شماره ردیف -->
+                                    <td>
+                                        <?php echo $row_number++; ?>
+                                    </td>
+
+                                    <!-- تصویر -->
+                                    <td>
+
+                                        <div class="overflow-hidden rounded"
+                                             style="width: 100px; height: 60px;">
+
+                                            <?php
+
+                                            $image_sliders = explode('++', $slider['p_image']);
+
+                                            $desktop_image_sliders = isset($image_sliders[0])
+                                                ? esc_url(trim($image_sliders[0]))
+                                                : '';
+
+                                            $mobile_image_sliders = isset($image_sliders[1])
+                                                ? esc_url(trim($image_sliders[1]))
+                                                : $desktop_image_sliders;
+
+                                            ?>
+
+                                            <img
+                                                    src="<?php echo $mobile_image_sliders; ?>"
+                                                    alt="تصویر اسلایدر"
+                                                    class="wooen-slider-image rounded"
+                                            >
+
+                                        </div>
+
+                                    </td>
+
+                                    <!-- عنوان بالا -->
+                                    <td>
+                                        <?php echo esc_html($slider['top_title']); ?>
+                                    </td>
+
+                                    <!-- عنوان اصلی -->
+                                    <td>
+                                        <?php echo esc_html($slider['main_title']); ?>
+                                    </td>
+
+                                    <!-- زیرعنوان -->
+                                    <td>
+                                        <?php echo esc_html($slider['sub_title']); ?>
+                                    </td>
+
+                                    <!-- آدرس صفحه مقصد -->
+                                    <td>
+
+                                        <a href="<?php echo esc_url($slider['p_thumbnail']); ?>"
+                                           target="_blank"
+                                           rel="noopener noreferrer">
+
+                                            <?php echo esc_html($slider['p_thumbnail']); ?>
+
+                                        </a>
+
+                                    </td>
+
+                                    <!-- عملیات -->
+                                    <td style="white-space: nowrap;">
+
+                                        <!-- حذف -->
+                                        <a href="<?php echo esc_url(
+                                            add_query_arg([
+                                                'action' => 'delete',
+                                                'id'     => $slider['id']
+                                            ])
+                                        ); ?>"
+                                           title="حذف اسلایدر"
+                                           class="btn btn-light btn-round mb-0">
+
+                                            <i class="fas fa-trash"></i>
+
+                                        </a>
+
+                                        <!-- ویرایش -->
+                                        <button
+                                                type="button"
+                                                class="btn btn-light btn-round mb-0 edit-slider-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#edit-slider-modal"
+                                                title="ویرایش اسلایدر"
+                                                data-id="<?php echo esc_attr($slider['id']); ?>"
+                                                data-top-title="<?php echo esc_attr($slider['top_title']); ?>"
+                                                data-main-title="<?php echo esc_attr($slider['main_title']); ?>"
+                                                data-sub-title="<?php echo esc_attr($slider['sub_title']); ?>"
+                                                data-p-thumbnail="<?php echo esc_attr($slider['p_thumbnail']); ?>"
+                                                data-p-image="<?php echo esc_attr($slider['p_image']); ?>"
+                                        >
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else : ?>
+
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    هنوز هیچ اسلایدری اضافه نشده است.
+                                </td>
+                            </tr>
+
+                        <?php endif; ?>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- مودال افزودن اسلایدر -->
+    <!-- ========================================================= -->
+
+    <div class="modal fade"
+         id="modal-add-slider"
+         tabindex="-1"
+         aria-labelledby="modalAddSliderLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-lg">
+
+            <div class="modal-content">
+
+                <!-- سربرگ مودال -->
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="modalAddSliderLabel">
+                        افزودن اسلایدر جدید
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="بستن">
+                    </button>
+
+                </div>
+
+                <!-- محتوای مودال -->
+                <div class="modal-body">
+
+                    <form method="post">
+
+                        <!-- تصویر -->
+                        <div class="mb-3">
+
+                            <label for="tns_images" class="form-label">
+                                آدرس تصویر
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="tns_images"
+                                    id="tns_images"
+                                    placeholder="آدرس تصویر را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- عنوان بالا -->
+                        <div class="mb-3">
+
+                            <label for="tns_top_title" class="form-label">
+                                عنوان بالا
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="tns_top_title"
+                                    id="tns_top_title"
+                                    placeholder="عنوان بالا را وارد کنید"
+                            >
+
+                        </div>
+
+                        <!-- عنوان اصلی -->
+                        <div class="mb-3">
+
+                            <label for="tns_main_title" class="form-label">
+                                عنوان اصلی
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="tns_main_title"
+                                    id="tns_main_title"
+                                    placeholder="عنوان اصلی را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- زیرعنوان -->
+                        <div class="mb-3">
+
+                            <label for="tns_sub_title" class="form-label">
+                                زیرعنوان
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="tns_sub_title"
+                                    id="tns_sub_title"
+                                    placeholder="زیرعنوان را وارد کنید"
+                            >
+
+                        </div>
+
+                        <!-- صفحه مقصد -->
+                        <div class="mb-3">
+
+                            <label for="tns_link" class="form-label">
+                                آدرس صفحه مقصد
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="tns_link"
+                                    id="tns_link"
+                                    placeholder="آدرس صفحه مقصد را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- دکمه‌های پایانی -->
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                انصراف
+                            </button>
+
+                            <?php
+                            submit_button(
+                                'ذخیره اسلایدر',
+                                'primary',
+                                'submit',
+                                false,
+                                [
+                                    'class' => 'btn btn-primary'
+                                ]
+                            );
+                            ?>
+
+                        </div>
+
+                        <?php
+                        wp_nonce_field(
+                            '_nonce_wooen_edit_slider',
+                            '_nonce_wooen_edit_slider'
+                        );
+                        ?>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- مودال ویرایش اسلایدر -->
+    <!-- ========================================================= -->
+
+    <div class="modal fade"
+         id="edit-slider-modal"
+         tabindex="-1"
+         aria-labelledby="editSliderModalLabel"
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+
+            <div class="modal-content">
+
+                <!-- سربرگ مودال -->
+                <div class="modal-header">
+
+                    <h5 class="modal-title" id="editSliderModalLabel">
+                        ویرایش اسلایدر
+                    </h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="بستن">
+                    </button>
+
+                </div>
+
+                <!-- محتوای مودال -->
+                <div class="modal-body">
+
+                    <form method="post">
+
+                        <input
+                                type="hidden"
+                                name="edit_id"
+                                id="edit_id"
+                        >
+
+                        <!-- تصویر -->
+                        <div class="mb-3">
+
+                            <label for="edit_tns_images" class="form-label">
+                                آدرس تصویر
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="edit_tns_images"
+                                    id="edit_tns_images"
+                                    placeholder="آدرس تصویر را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- عنوان بالا -->
+                        <div class="mb-3">
+
+                            <label for="edit_tns_top_title" class="form-label">
+                                عنوان بالا
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="edit_tns_top_title"
+                                    id="edit_tns_top_title"
+                                    placeholder="عنوان بالا را وارد کنید"
+                            >
+
+                        </div>
+
+                        <!-- عنوان اصلی -->
+                        <div class="mb-3">
+
+                            <label for="edit_tns_main_title" class="form-label">
+                                عنوان اصلی
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="edit_tns_main_title"
+                                    id="edit_tns_main_title"
+                                    placeholder="عنوان اصلی را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- زیرعنوان -->
+                        <div class="mb-3">
+
+                            <label for="edit_tns_sub_title" class="form-label">
+                                زیرعنوان
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="edit_tns_sub_title"
+                                    id="edit_tns_sub_title"
+                                    placeholder="زیرعنوان را وارد کنید"
+                            >
+
+                        </div>
+
+                        <!-- صفحه مقصد -->
+                        <div class="mb-3">
+
+                            <label for="edit_tns_link" class="form-label">
+                                آدرس صفحه مقصد
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    name="edit_tns_link"
+                                    id="edit_tns_link"
+                                    placeholder="آدرس صفحه مقصد را وارد کنید"
+                                    required
+                            >
+
+                        </div>
+
+                        <!-- دکمه‌های پایانی -->
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                انصراف
+                            </button>
+
+                            <?php
+                            submit_button(
+                                'ذخیره تغییرات',
+                                'primary',
+                                'edit_submit',
+                                false,
+                                [
+                                    'class' => 'btn btn-primary'
+                                ]
+                            );
+                            ?>
+
+                        </div>
+
+                        <?php
+                        wp_nonce_field(
+                            '_nonce_wooen_edit_slider',
+                            '_nonce_wooen_edit_slider'
+                        );
+                        ?>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+<?php else : ?>
 <div class="wooen-slider-wrapper">
 
 
@@ -611,4 +1134,4 @@ $message = $sliders->get_message();
     </div>
 
 </div>
-
+<?php endif;
