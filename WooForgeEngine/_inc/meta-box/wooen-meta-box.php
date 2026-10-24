@@ -15,7 +15,28 @@ function wooen_add_meta_box_send_post_newsletter(): void
 function wooen_send_post_newsletter_layout($post): void
 {
    $send_newsletter = get_post_meta($post->ID,'_wooen_send_post_newsletter',true);
-   wp_nonce_field('wooen_nonce_send_post_newsletter_action','wooen_nonce_send_post_newsletter_action'); ?>
+   wp_nonce_field('wooen_nonce_send_post_newsletter_action','wooen_nonce_send_post_newsletter_action');
+    $locale = get_locale();
+    if ($locale === 'fa_IR') : ?>
+        <div>
+            <label>
+                <input
+                        name="send_post_newsletter"
+                        type="checkbox"
+                        value="1"
+                    <?php checked($send_newsletter, 1); ?>
+                >
+
+                <span>
+            ارسال این نوشته به مشترکین خبرنامه
+        </span>
+            </label>
+
+            <p class="description">
+                با فعال کردن این گزینه، این نوشته برای تمام مشترکین فعال خبرنامه ارسال می‌شود.
+            </p>
+        </div>
+    <?php else : ?>
     <div>
         <label>
             <input name="send_post_newsletter" type="checkbox" value="1" <?php checked($send_newsletter , 1) ?>>
@@ -27,6 +48,7 @@ function wooen_send_post_newsletter_layout($post): void
             Enable this option to send this post to all active newsletter subscribers.
         </p>
     </div>
+    <?php endif; ?>
 
 <?php }
 
@@ -76,12 +98,17 @@ function wooen_add_meta_box_popular_layout($post): void
     $show_popular = get_post_meta($post->ID, '_wooen_check_popular', true);
     wp_nonce_field('wooen_nonce_popular_action', 'wooen_nonce_popular_action');
     ?>
-    <div>
-        <label>
-            <input type="checkbox" name="show_popular" value="1" <?php checked($show_popular, 1); ?>>
-            <span>محبوب ترین محصول از دید شما آن را انتخاب کنید!</span>
-        </label>
-    </div>
+        <?php $locale = get_locale();
+        if ($locale === 'fa_IR') : ?>
+            <div>
+                <label>
+                    <input type="checkbox" name="show_popular" value="1" <?php checked($show_popular, 1); ?>>
+                    <span>Select this product as your favorite!</span>
+                </label>
+            </div>
+        <?php else : ?>
+
+        <?php endif; ?>
     <?php
 }
 
