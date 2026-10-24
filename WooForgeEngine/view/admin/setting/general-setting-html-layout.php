@@ -1,1 +1,1587 @@
-<?phpif (!current_user_can('manage_options')) {    return;}$message = '';$setting_website_general = get_option(    '_shw_settings_set_general',    []);$setting_website_smtp = get_option(    '_shw_settings_set_smtp',    []);$set_index_website = get_option(    '_shw_set_index_website',    []);/*|--------------------------------------------------------------------------| Process Form Submission|--------------------------------------------------------------------------*/if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {    if (        !isset($_POST['_nonce_tns_setting_general']) ||        !wp_verify_nonce(            $_POST['_nonce_tns_setting_general'],            '_nonce_tns_setting_general'        )    ) {        $message = '            <div class="alert alert-danger alert-dismissible fade show" role="alert">                Security validation failed!                <button                    type="button"                    class="btn-close"                    data-bs-dismiss="alert"                ></button>            </div>        ';    } else {        /*        |--------------------------------------------------------------------------        | General Settings        |--------------------------------------------------------------------------        */        $select_index_data = intval(            $_POST['_tnm_show_index'] ?? 1        );        $setting_website_general_data = [            'wishlist_enable' =>                sanitize_text_field(                    $_POST['wishlist_enable'] ?? 'no'                ),            'newsletter_enable' =>                sanitize_text_field(                    $_POST['newsletter_enable'] ?? 'no'                ),            'sale_plugin_or_themes_enable' =>                sanitize_text_field(                    $_POST['sale_plugin_or_themes_enable'] ?? 'no'                ),            'register_from_enable' =>                sanitize_text_field(                    $_POST['register_from_enable'] ?? 'no'                ),            'register_from_sms_enable' =>                sanitize_text_field(                    $_POST['register_from_sms_enable'] ?? 'no'                ),            'adv_enable' =>                sanitize_text_field(                    $_POST['adv_enable'] ?? 'no'                ),            'exclude_category_id' =>                sanitize_text_field(                    $_POST['exclude_category'] ?? ''                ),            'link_enamad' =>                sanitize_text_field(                    $_POST['input-enamad'] ?? ''                ),            'link_zarinpal' =>                sanitize_text_field(                    $_POST['input-zarinpal'] ?? ''                ),        ];        /*        |--------------------------------------------------------------------------        | SMTP Settings        |--------------------------------------------------------------------------        */        $setting_website_smtp_data = [            'host' =>                sanitize_text_field(                    $_POST['host-fs'] ?? ''                ),            'port' =>                sanitize_text_field(                    $_POST['port-fs'] ?? ''                ),            'username' =>                sanitize_text_field(                    $_POST['username-fs'] ?? ''                ),            'password' =>                sanitize_text_field(                    $_POST['password-fs'] ?? ''                ),            'from' =>                sanitize_email(                    $_POST['from-fs'] ?? ''                ),            'FormName' =>                sanitize_text_field(                    $_POST['FormName-fs'] ?? ''                ),        ];        /*        |--------------------------------------------------------------------------        | Save Settings        |--------------------------------------------------------------------------        */        update_option(            '_shw_settings_set_general',            $setting_website_general_data        );        update_option(            '_shw_settings_set_smtp',            $setting_website_smtp_data        );        update_option(            '_shw_set_index_website',            $select_index_data        );        /*        |--------------------------------------------------------------------------        | Update Current Values        |--------------------------------------------------------------------------        */        $setting_website_general =            $setting_website_general_data;        $setting_website_smtp =            $setting_website_smtp_data;        $set_index_website =            $select_index_data;        $message = '            <div class="alert alert-success alert-dismissible fade show" role="alert">                Settings saved successfully!                <button                    type="button"                    class="btn-close"                    data-bs-dismiss="alert"                ></button>            </div>        ';    }}?><style>    /*    |--------------------------------------------------------------------------    | Full Width Admin Page    |--------------------------------------------------------------------------    */    .tns-general-settings {        width: 100% !important;        max-width: none !important;        margin: 0 !important;        padding: 0 20px 30px 0 !important;        box-sizing: border-box !important;    }    .tns-general-settings .tns-general-card {        width: 100% !important;        max-width: none !important;        box-sizing: border-box !important;    }    .tns-general-settings .tns-general-card .card-body {        width: 100%;        box-sizing: border-box;    }    .tns-general-settings .tns-general-card form {        width: 100%;    }    .tns-general-settings .row {        width: 100%;        margin-left: 0;        margin-right: 0;    }    .tns-general-settings .form-control {        width: 100%;    }    .tns-general-settings .setting-option {        height: 100%;    }    .tns-general-settings .setting-option .card {        height: 100%;    }</style><div class="tns-general-settings">    <!--    |--------------------------------------------------------------------------    | Page Header    |--------------------------------------------------------------------------    -->    <div class="d-flex justify-content-between align-items-center mb-4">        <div>            <h4 class="mb-1">                <?php                echo esc_html(                    get_admin_page_title()                );                ?>            </h4>            <p class="text-muted mb-0">                Manage your website's general settings.            </p>        </div>    </div>    <!--    |--------------------------------------------------------------------------    | Message    |--------------------------------------------------------------------------    -->    <?php if (!empty($message)) : ?>        <?php echo $message; ?>    <?php endif; ?>    <!--    |--------------------------------------------------------------------------    | Main Card    |--------------------------------------------------------------------------    -->    <div class="card border-0 shadow-sm tns-general-card">        <!--        |--------------------------------------------------------------------------        | Card Header        |--------------------------------------------------------------------------        -->        <div class="card-header bg-white border-bottom py-3">            <h5 class="mb-0">                General Website Settings            </h5>        </div>        <!--        |--------------------------------------------------------------------------        | Card Body        |--------------------------------------------------------------------------        -->        <div class="card-body p-4">            <form method="post">                <!--                |--------------------------------------------------------------------------                | Website Index                |--------------------------------------------------------------------------                -->                <div class="mb-4">                    <h6 class="fw-semibold mb-3">                        Website Status                    </h6>                    <div class="row g-4">                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="radio"                                        name="_tnm_show_index"                                        id="website-active"                                        value="1"                                    <?php checked(                                        $set_index_website,                                        1                                    ); ?>                                >                                <label                                        class="form-check-label"                                        for="website-active"                                >                                    Enable Website                                </label>                            </div>                            <div class="form-text">                                Enable the main website.                            </div>                        </div>                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="radio"                                        name="_tnm_show_index"                                        id="website-maintenance"                                        value="2"                                    <?php checked(                                        $set_index_website,                                        2                                    ); ?>                                >                                <label                                        class="form-check-label"                                        for="website-maintenance"                                >                                    Maintenance Mode                                </label>                            </div>                            <div class="form-text">                                Display the website in maintenance mode.                            </div>                        </div>                    </div>                </div>                <hr class="my-4">                <!--                |--------------------------------------------------------------------------                | Website Features                |--------------------------------------------------------------------------                -->                <div class="mb-4">                    <h6 class="fw-semibold mb-3">                        Website Features                    </h6>                    <div class="row g-4">                        <!-- Wishlist -->                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="checkbox"                                        name="wishlist_enable"                                        id="wishlist_enable"                                        value="yes"                                    <?php checked(                                        $setting_website_general['wishlist_enable'] ?? 'no',                                        'yes'                                    ); ?>                                >                                <label                                        class="form-check-label fw-semibold"                                        for="wishlist_enable"                                >                                    Wishlist System                                </label>                            </div>                            <div class="form-text">                                Enable like, dislike and bookmark functionality.                            </div>                        </div>                        <!-- Newsletter -->                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="checkbox"                                        name="newsletter_enable"                                        id="newsletter_enable"                                        value="yes"                                    <?php checked(                                        $setting_website_general['newsletter_enable'] ?? 'no',                                        'yes'                                    ); ?>                                >                                <label                                        class="form-check-label fw-semibold"                                        for="newsletter_enable"                                >                                    Newsletter System                                </label>                            </div>                            <div class="form-text">                                Enable the website newsletter system.                            </div>                        </div>                        <!-- Theme / Plugin Sale -->                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="checkbox"                                        name="sale_plugin_or_themes_enable"                                        id="sale_plugin_or_themes_enable"                                        value="yes"                                    <?php checked(                                        $setting_website_general['sale_plugin_or_themes_enable'] ?? 'no',                                        'yes'                                    ); ?>                                >                                <label                                        class="form-check-label fw-semibold"                                        for="sale_plugin_or_themes_enable"                                >                                    Theme & Plugin Sales                                </label>                            </div>                            <div class="form-text">                                Enable WordPress theme and plugin sales.                            </div>                        </div>                        <!-- Registration -->                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="checkbox"                                        name="register_from_enable"                                        id="register_from_enable"                                        value="yes"                                    <?php checked(                                        $setting_website_general['register_from_enable'] ?? 'no',                                        'yes'                                    ); ?>                                >                                <label                                        class="form-check-label fw-semibold"                                        for="register_from_enable"                                >                                    User Registration                                </label>                            </div>                            <div class="form-text">                                Enable user registration on the website.                            </div>                        </div>                        <!-- SMS -->                        <?php if (                            ($setting_website_general['register_from_enable'] ?? 'no')                            === 'yes'                        ) : ?>                            <div class="col-12 col-md-6">                                <div class="form-check">                                    <input                                            class="form-check-input"                                            type="checkbox"                                            name="register_from_sms_enable"                                            id="register_from_sms_enable"                                            value="yes"                                        <?php checked(                                            $setting_website_general['register_from_sms_enable'] ?? 'no',                                            'yes'                                        ); ?>                                    >                                    <label                                            class="form-check-label fw-semibold"                                            for="register_from_sms_enable"                                    >                                        SMS Registration                                    </label>                                </div>                                <div class="form-text">                                    Enable SMS verification during registration.                                </div>                            </div>                        <?php endif; ?>                        <!-- Advertisement -->                        <div class="col-12 col-md-6">                            <div class="form-check">                                <input                                        class="form-check-input"                                        type="checkbox"                                        name="adv_enable"                                        id="adv_enable"                                        value="yes"                                    <?php checked(                                        $setting_website_general['adv_enable'] ?? 'no',                                        'yes'                                    ); ?>                                >                                <label                                        class="form-check-label fw-semibold"                                        for="adv_enable"                                >                                    Advertisement System                                </label>                            </div>                            <div class="form-text">                                Enable advertisements on the homepage.                            </div>                        </div>                    </div>                </div>                <hr class="my-4">                <!--                |--------------------------------------------------------------------------                | Category Settings                |--------------------------------------------------------------------------                -->                <div class="mb-4">                    <h6 class="fw-semibold mb-3">                        Category Settings                    </h6>                    <div class="row g-4">                        <div class="col-12 col-md-6">                            <label                                    for="exclude_category"                                    class="form-label fw-semibold"                            >                                Excluded Category ID                            </label>                            <input                                    class="form-control"                                    type="text"                                    id="exclude_category"                                    name="exclude_category"                                    value="<?php echo esc_attr(                                        $setting_website_general['exclude_category_id'] ?? ''                                    ); ?>"                                    placeholder="Enter category ID"                            >                            <div class="form-text">                                Enter the category ID that should be excluded.                            </div>                        </div>                    </div>                </div>                <hr class="my-4">                <!--                |--------------------------------------------------------------------------                | SMTP Settings                |--------------------------------------------------------------------------                -->                <div class="mb-4">                    <h6 class="fw-semibold mb-3">                        SMTP Settings                    </h6>                    <div class="row g-4">                        <!-- Host -->                        <div class="col-12 col-md-6">                            <label                                    for="host-fs"                                    class="form-label fw-semibold"                            >                                Host                            </label>                            <input                                    class="form-control"                                    id="host-fs"                                    type="text"                                    name="host-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['host'] ?? ''                                    ); ?>"                                    placeholder="smtp.example.com"                            >                        </div>                        <!-- Port -->                        <div class="col-12 col-md-6">                            <label                                    for="port-fs"                                    class="form-label fw-semibold"                            >                                Port                            </label>                            <input                                    class="form-control"                                    id="port-fs"                                    type="text"                                    name="port-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['port'] ?? ''                                    ); ?>"                                    placeholder="587"                            >                        </div>                        <!-- Username -->                        <div class="col-12 col-md-6">                            <label                                    for="username-fs"                                    class="form-label fw-semibold"                            >                                Username                            </label>                            <input                                    class="form-control"                                    id="username-fs"                                    type="text"                                    name="username-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['username'] ?? ''                                    ); ?>"                                    placeholder="SMTP username"                            >                        </div>                        <!-- Password -->                        <div class="col-12 col-md-6">                            <label                                    for="password-fs"                                    class="form-label fw-semibold"                            >                                Password                            </label>                            <input                                    class="form-control"                                    id="password-fs"                                    type="password"                                    name="password-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['password'] ?? ''                                    ); ?>"                                    placeholder="SMTP password"                            >                        </div>                        <!-- From Email -->                        <div class="col-12 col-md-6">                            <label                                    for="from-fs"                                    class="form-label fw-semibold"                            >                                From Email                            </label>                            <input                                    class="form-control"                                    id="from-fs"                                    type="email"                                    name="from-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['from'] ?? ''                                    ); ?>"                                    placeholder="no-reply@example.com"                            >                        </div>                        <!-- From Name -->                        <div class="col-12 col-md-6">                            <label                                    for="FormName-fs"                                    class="form-label fw-semibold"                            >                                From Name                            </label>                            <input                                    class="form-control"                                    id="FormName-fs"                                    type="text"                                    name="FormName-fs"                                    value="<?php echo esc_attr(                                        $setting_website_smtp['FormName'] ?? ''                                    ); ?>"                                    placeholder="Website Name"                            >                        </div>                    </div>                </div>                <hr class="my-4">                <!--                |--------------------------------------------------------------------------                | Website Links                |--------------------------------------------------------------------------                -->                <div class="mb-4">                    <h6 class="fw-semibold mb-3">                        Website Links                    </h6>                    <div class="row g-4">                        <!-- Enamad -->                        <div class="col-12 col-md-6">                            <label                                    for="input-enamad"                                    class="form-label fw-semibold"                            >                                Enamad Link                            </label>                            <input                                    class="form-control"                                    id="input-enamad"                                    type="text"                                    name="input-enamad"                                    value="<?php echo esc_attr(                                        $setting_website_general['link_enamad'] ?? ''                                    ); ?>"                                    placeholder="Enter Enamad URL"                            >                        </div>                        <!-- Zarinpal -->                        <div class="col-12 col-md-6">                            <label                                    for="input-zarinpal"                                    class="form-label fw-semibold"                            >                                Zarinpal Link                            </label>                            <input                                    class="form-control"                                    id="input-zarinpal"                                    type="text"                                    name="input-zarinpal"                                    value="<?php echo esc_attr(                                        $setting_website_general['link_zarinpal'] ?? ''                                    ); ?>"                                    placeholder="Enter Zarinpal URL"                            >                        </div>                    </div>                </div>                <!--                |--------------------------------------------------------------------------                | Save                |--------------------------------------------------------------------------                -->                <div class="mt-4 pt-3 border-top">                    <?php                    wp_nonce_field(                        '_nonce_tns_setting_general',                        '_nonce_tns_setting_general'                    );                    ?>                    <button                            type="submit"                            name="submit"                            class="btn btn-primary px-4"                    >                        <i class="fas fa-save me-2"></i>                        Save Settings                    </button>                </div>            </form>        </div>    </div></div>
+<?php
+
+if (!current_user_can('manage_options')) {
+    return;
+}
+
+$message = '';
+$locale = get_locale();
+
+
+$setting_website_general = get_option(
+    '_shw_settings_set_general',
+    []
+);
+
+$setting_website_smtp = get_option(
+    '_shw_settings_set_smtp',
+    []
+);
+
+$set_index_website = get_option(
+    '_shw_set_index_website',
+    []
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| Process Form Submission
+|--------------------------------------------------------------------------
+*/
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+
+    if (
+        !isset($_POST['_nonce_tns_setting_general']) ||
+        !wp_verify_nonce(
+            $_POST['_nonce_tns_setting_general'],
+            '_nonce_tns_setting_general'
+        )
+    ) {
+
+        $message = '
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Security validation failed!
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+        ';
+
+    } else {
+
+        /*
+        |--------------------------------------------------------------------------
+        | General Settings
+        |--------------------------------------------------------------------------
+        */
+
+        $select_index_data = intval(
+            $_POST['_tnm_show_index'] ?? 1
+        );
+
+        $setting_website_general_data = [
+
+            'wishlist_enable' =>
+                sanitize_text_field(
+                    $_POST['wishlist_enable'] ?? 'no'
+                ),
+
+            'newsletter_enable' =>
+                sanitize_text_field(
+                    $_POST['newsletter_enable'] ?? 'no'
+                ),
+
+            'sale_plugin_or_themes_enable' =>
+                sanitize_text_field(
+                    $_POST['sale_plugin_or_themes_enable'] ?? 'no'
+                ),
+
+            'register_from_enable' =>
+                sanitize_text_field(
+                    $_POST['register_from_enable'] ?? 'no'
+                ),
+
+            'register_from_sms_enable' =>
+                sanitize_text_field(
+                    $_POST['register_from_sms_enable'] ?? 'no'
+                ),
+
+            'adv_enable' =>
+                sanitize_text_field(
+                    $_POST['adv_enable'] ?? 'no'
+                ),
+
+            'exclude_category_id' =>
+                sanitize_text_field(
+                    $_POST['exclude_category'] ?? ''
+                ),
+
+            'link_enamad' =>
+                sanitize_text_field(
+                    $_POST['input-enamad'] ?? ''
+                ),
+
+            'link_zarinpal' =>
+                sanitize_text_field(
+                    $_POST['input-zarinpal'] ?? ''
+                ),
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | SMTP Settings
+        |--------------------------------------------------------------------------
+        */
+
+        $setting_website_smtp_data = [
+
+            'host' =>
+                sanitize_text_field(
+                    $_POST['host-fs'] ?? ''
+                ),
+
+            'port' =>
+                sanitize_text_field(
+                    $_POST['port-fs'] ?? ''
+                ),
+
+            'username' =>
+                sanitize_text_field(
+                    $_POST['username-fs'] ?? ''
+                ),
+
+            'password' =>
+                sanitize_text_field(
+                    $_POST['password-fs'] ?? ''
+                ),
+
+            'from' =>
+                sanitize_email(
+                    $_POST['from-fs'] ?? ''
+                ),
+
+            'FormName' =>
+                sanitize_text_field(
+                    $_POST['FormName-fs'] ?? ''
+                ),
+        ];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Save Settings
+        |--------------------------------------------------------------------------
+        */
+
+        update_option(
+            '_shw_settings_set_general',
+            $setting_website_general_data
+        );
+
+        update_option(
+            '_shw_settings_set_smtp',
+            $setting_website_smtp_data
+        );
+
+        update_option(
+            '_shw_set_index_website',
+            $select_index_data
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Current Values
+        |--------------------------------------------------------------------------
+        */
+
+        $setting_website_general =
+            $setting_website_general_data;
+
+        $setting_website_smtp =
+            $setting_website_smtp_data;
+
+        $set_index_website =
+            $select_index_data;
+
+
+        $message = '
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Settings saved successfully!
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+            </div>
+        ';
+    }
+}
+
+?>
+
+<style>
+
+    /*
+    |--------------------------------------------------------------------------
+    | Full Width Admin Page
+    |--------------------------------------------------------------------------
+    */
+
+    .tns-general-settings {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 0 20px 30px 0 !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    .tns-general-settings .tns-general-card {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        box-sizing: border-box !important;
+    }
+
+
+    .tns-general-settings .tns-general-card .card-body {
+
+        width: 100%;
+
+        box-sizing: border-box;
+    }
+
+
+    .tns-general-settings .tns-general-card form {
+
+        width: 100%;
+    }
+
+
+    .tns-general-settings .row {
+
+        width: 100%;
+
+        margin-left: 0;
+
+        margin-right: 0;
+    }
+
+
+    .tns-general-settings .form-control {
+
+        width: 100%;
+    }
+
+
+    .tns-general-settings .setting-option {
+
+        height: 100%;
+    }
+
+
+    .tns-general-settings .setting-option .card {
+
+        height: 100%;
+    }
+
+</style>
+
+<?php if ($locale === 'fa_IR'):?>
+    <div class="tns-general-settings">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h4 class="mb-1">
+                    <?php
+                    echo esc_html(
+                        get_admin_page_title()
+                    );
+                    ?>
+                </h4>
+                <p class="text-muted mb-0">
+                    تنظیمات عمومی وب‌سایت خود را مدیریت کنید.
+                </p>
+            </div>
+        </div>
+
+        <!-- Message -->
+        <?php if (!empty($message)) : ?>
+            <?php echo $message; ?>
+        <?php endif; ?>
+
+        <!-- Main Card -->
+        <div class="card border-0 shadow-sm tns-general-card">
+            <!-- Card Header -->
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="mb-0">
+                    تنظیمات عمومی وب‌سایت
+                </h5>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body p-4">
+                <form method="post">
+
+                    <!-- Website Status -->
+                    <div class="mb-4">
+                        <h6 class="fw-semibold mb-3">
+                            وضعیت وب‌سایت
+                        </h6>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="_tnm_show_index"
+                                            id="website-active"
+                                            value="1"
+                                        <?php checked($set_index_website, 1); ?>
+                                    >
+                                    <label
+                                            class="form-check-label"
+                                            for="website-active"
+                                    >
+                                        فعال‌سازی وب‌سایت
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    وب‌سایت اصلی را فعال کنید.
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="radio"
+                                            name="_tnm_show_index"
+                                            id="website-maintenance"
+                                            value="2"
+                                        <?php checked($set_index_website, 2); ?>
+                                    >
+                                    <label
+                                            class="form-check-label"
+                                            for="website-maintenance"
+                                    >
+                                        حالت تعمیر و نگهداری
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    وب‌سایت را در حالت تعمیر و نگهداری نمایش دهید.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Website Features -->
+                    <div class="mb-4">
+                        <h6 class="fw-semibold mb-3">
+                            قابلیت‌های وب‌سایت
+                        </h6>
+
+                        <div class="row g-4">
+
+                            <!-- Wishlist -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="wishlist_enable"
+                                            id="wishlist_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['wishlist_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="wishlist_enable"
+                                    >
+                                        سیستم علاقه‌مندی‌ها
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    قابلیت پسندیدن، نپسندیدن و نشان‌کردن مطالب را فعال کنید.
+                                </div>
+                            </div>
+
+                            <!-- Newsletter -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="newsletter_enable"
+                                            id="newsletter_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['newsletter_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="newsletter_enable"
+                                    >
+                                        سیستم خبرنامه
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    سیستم خبرنامه وب‌سایت را فعال کنید.
+                                </div>
+                            </div>
+
+                            <!-- Theme / Plugin Sale -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="sale_plugin_or_themes_enable"
+                                            id="sale_plugin_or_themes_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['sale_plugin_or_themes_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="sale_plugin_or_themes_enable"
+                                    >
+                                        فروش قالب و افزونه
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    امکان فروش قالب‌ها و افزونه‌های وردپرس را فعال کنید.
+                                </div>
+                            </div>
+
+                            <!-- Registration -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="register_from_enable"
+                                            id="register_from_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['register_from_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="register_from_enable"
+                                    >
+                                        ثبت‌نام کاربران
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    امکان ثبت‌نام کاربران در وب‌سایت را فعال کنید.
+                                </div>
+                            </div>
+
+                            <!-- SMS -->
+                            <?php if (
+                                ($setting_website_general['register_from_enable'] ?? 'no')
+                                === 'yes'
+                            ) : ?>
+                                <div class="col-12 col-md-6">
+                                    <div class="form-check">
+                                        <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="register_from_sms_enable"
+                                                id="register_from_sms_enable"
+                                                value="yes"
+                                            <?php checked(
+                                                $setting_website_general['register_from_sms_enable'] ?? 'no',
+                                                'yes'
+                                            ); ?>
+                                        >
+                                        <label
+                                                class="form-check-label fw-semibold"
+                                                for="register_from_sms_enable"
+                                        >
+                                            ثبت‌نام پیامکی
+                                        </label>
+                                    </div>
+                                    <div class="form-text">
+                                        تأیید هویت پیامکی هنگام ثبت‌نام را فعال کنید.
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Advertisement -->
+                            <div class="col-12 col-md-6">
+                                <div class="form-check">
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="adv_enable"
+                                            id="adv_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['adv_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="adv_enable"
+                                    >
+                                        سیستم تبلیغات
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    نمایش تبلیغات در صفحه اصلی را فعال کنید.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Category Settings -->
+                    <div class="mb-4">
+                        <h6 class="fw-semibold mb-3">
+                            تنظیمات دسته‌بندی
+                        </h6>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="exclude_category"
+                                        class="form-label fw-semibold"
+                                >
+                                    شناسه دسته‌بندی مستثناشده
+                                </label>
+                                <input
+                                        class="form-control"
+                                        type="text"
+                                        id="exclude_category"
+                                        name="exclude_category"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_general['exclude_category_id'] ?? ''
+                                        ); ?>"
+                                        placeholder="شناسه دسته‌بندی را وارد کنید"
+                                >
+                                <div class="form-text">
+                                    شناسه دسته‌بندی‌ای را وارد کنید که باید از نمایش مستثنا شود.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- SMTP Settings -->
+                    <div class="mb-4">
+                        <h6 class="fw-semibold mb-3">
+                            تنظیمات SMTP
+                        </h6>
+
+                        <div class="row g-4">
+
+                            <!-- Host -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="host-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    میزبان
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="host-fs"
+                                        type="text"
+                                        name="host-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['host'] ?? ''
+                                        ); ?>"
+                                        placeholder="smtp.example.com"
+                                >
+                            </div>
+
+                            <!-- Port -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="port-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    درگاه
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="port-fs"
+                                        type="text"
+                                        name="port-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['port'] ?? ''
+                                        ); ?>"
+                                        placeholder="587"
+                                >
+                            </div>
+
+                            <!-- Username -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="username-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    نام کاربری
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="username-fs"
+                                        type="text"
+                                        name="username-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['username'] ?? ''
+                                        ); ?>"
+                                        placeholder="نام کاربری SMTP"
+                                >
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="password-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    گذرواژه
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="password-fs"
+                                        type="password"
+                                        name="password-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['password'] ?? ''
+                                        ); ?>"
+                                        placeholder="گذرواژه SMTP"
+                                >
+                            </div>
+
+                            <!-- From Email -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="from-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    ایمیل فرستنده
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="from-fs"
+                                        type="email"
+                                        name="from-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['from'] ?? ''
+                                        ); ?>"
+                                        placeholder="no-reply@example.com"
+                                >
+                            </div>
+
+                            <!-- From Name -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="FormName-fs"
+                                        class="form-label fw-semibold"
+                                >
+                                    نام فرستنده
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="FormName-fs"
+                                        type="text"
+                                        name="FormName-fs"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_smtp['FormName'] ?? ''
+                                        ); ?>"
+                                        placeholder="نام وب‌سایت"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Website Links -->
+                    <div class="mb-4">
+                        <h6 class="fw-semibold mb-3">
+                            پیوندهای وب‌سایت
+                        </h6>
+
+                        <div class="row g-4">
+
+                            <!-- Enamad -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="input-enamad"
+                                        class="form-label fw-semibold"
+                                >
+                                    پیوند اینماد
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="input-enamad"
+                                        type="text"
+                                        name="input-enamad"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_general['link_enamad'] ?? ''
+                                        ); ?>"
+                                        placeholder="نشانی اینماد را وارد کنید"
+                                >
+                            </div>
+
+                            <!-- Zarinpal -->
+                            <div class="col-12 col-md-6">
+                                <label
+                                        for="input-zarinpal"
+                                        class="form-label fw-semibold"
+                                >
+                                    پیوند زرین‌پال
+                                </label>
+                                <input
+                                        class="form-control"
+                                        id="input-zarinpal"
+                                        type="text"
+                                        name="input-zarinpal"
+                                        value="<?php echo esc_attr(
+                                            $setting_website_general['link_zarinpal'] ?? ''
+                                        ); ?>"
+                                        placeholder="نشانی زرین‌پال را وارد کنید"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Save -->
+                    <div class="mt-4 pt-3 border-top">
+                        <?php
+                        wp_nonce_field(
+                            '_nonce_tns_setting_general',
+                            '_nonce_tns_setting_general'
+                        );
+                        ?>
+                        <button
+                                type="submit"
+                                name="submit"
+                                class="btn btn-primary px-4"
+                        >
+                            <i class="fas fa-save me-2"></i>
+                            ذخیره تنظیمات
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+<?php else : ?>
+    <div class="tns-general-settings">
+
+
+    <!--
+    |--------------------------------------------------------------------------
+    | Page Header
+    |--------------------------------------------------------------------------
+    -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h4 class="mb-1">
+
+                <?php
+                echo esc_html(
+                    get_admin_page_title()
+                );
+                ?>
+
+            </h4>
+
+            <p class="text-muted mb-0">
+
+                Manage your website's general settings.
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!--
+    |--------------------------------------------------------------------------
+    | Message
+    |--------------------------------------------------------------------------
+    -->
+
+    <?php if (!empty($message)) : ?>
+
+        <?php echo $message; ?>
+
+    <?php endif; ?>
+
+
+    <!--
+    |--------------------------------------------------------------------------
+    | Main Card
+    |--------------------------------------------------------------------------
+    -->
+
+    <div class="card border-0 shadow-sm tns-general-card">
+
+
+        <!--
+        |--------------------------------------------------------------------------
+        | Card Header
+        |--------------------------------------------------------------------------
+        -->
+
+        <div class="card-header bg-white border-bottom py-3">
+
+            <h5 class="mb-0">
+
+                General Website Settings
+
+            </h5>
+
+        </div>
+
+
+        <!--
+        |--------------------------------------------------------------------------
+        | Card Body
+        |--------------------------------------------------------------------------
+        -->
+
+        <div class="card-body p-4">
+
+
+            <form method="post">
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | Website Index
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mb-4">
+
+                    <h6 class="fw-semibold mb-3">
+
+                        Website Status
+
+                    </h6>
+
+
+                    <div class="row g-4">
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="_tnm_show_index"
+                                        id="website-active"
+                                        value="1"
+                                    <?php checked(
+                                        $set_index_website,
+                                        1
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label"
+                                        for="website-active"
+                                >
+
+                                    Enable Website
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable the main website.
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        name="_tnm_show_index"
+                                        id="website-maintenance"
+                                        value="2"
+                                    <?php checked(
+                                        $set_index_website,
+                                        2
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label"
+                                        for="website-maintenance"
+                                >
+
+                                    Maintenance Mode
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Display the website in maintenance mode.
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | Website Features
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mb-4">
+
+                    <h6 class="fw-semibold mb-3">
+
+                        Website Features
+
+                    </h6>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- Wishlist -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="wishlist_enable"
+                                        id="wishlist_enable"
+                                        value="yes"
+                                    <?php checked(
+                                        $setting_website_general['wishlist_enable'] ?? 'no',
+                                        'yes'
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label fw-semibold"
+                                        for="wishlist_enable"
+                                >
+
+                                    Wishlist System
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable like, dislike and bookmark functionality.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Newsletter -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="newsletter_enable"
+                                        id="newsletter_enable"
+                                        value="yes"
+                                    <?php checked(
+                                        $setting_website_general['newsletter_enable'] ?? 'no',
+                                        'yes'
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label fw-semibold"
+                                        for="newsletter_enable"
+                                >
+
+                                    Newsletter System
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable the website newsletter system.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Theme / Plugin Sale -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="sale_plugin_or_themes_enable"
+                                        id="sale_plugin_or_themes_enable"
+                                        value="yes"
+                                    <?php checked(
+                                        $setting_website_general['sale_plugin_or_themes_enable'] ?? 'no',
+                                        'yes'
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label fw-semibold"
+                                        for="sale_plugin_or_themes_enable"
+                                >
+
+                                    Theme & Plugin Sales
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable WordPress theme and plugin sales.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Registration -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="register_from_enable"
+                                        id="register_from_enable"
+                                        value="yes"
+                                    <?php checked(
+                                        $setting_website_general['register_from_enable'] ?? 'no',
+                                        'yes'
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label fw-semibold"
+                                        for="register_from_enable"
+                                >
+
+                                    User Registration
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable user registration on the website.
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SMS -->
+
+                        <?php if (
+                            ($setting_website_general['register_from_enable'] ?? 'no')
+                            === 'yes'
+                        ) : ?>
+
+                            <div class="col-12 col-md-6">
+
+                                <div class="form-check">
+
+                                    <input
+                                            class="form-check-input"
+                                            type="checkbox"
+                                            name="register_from_sms_enable"
+                                            id="register_from_sms_enable"
+                                            value="yes"
+                                        <?php checked(
+                                            $setting_website_general['register_from_sms_enable'] ?? 'no',
+                                            'yes'
+                                        ); ?>
+                                    >
+
+                                    <label
+                                            class="form-check-label fw-semibold"
+                                            for="register_from_sms_enable"
+                                    >
+
+                                        SMS Registration
+
+                                    </label>
+
+                                </div>
+
+                                <div class="form-text">
+
+                                    Enable SMS verification during registration.
+
+                                </div>
+
+                            </div>
+
+                        <?php endif; ?>
+
+
+                        <!-- Advertisement -->
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="form-check">
+
+                                <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="adv_enable"
+                                        id="adv_enable"
+                                        value="yes"
+                                    <?php checked(
+                                        $setting_website_general['adv_enable'] ?? 'no',
+                                        'yes'
+                                    ); ?>
+                                >
+
+                                <label
+                                        class="form-check-label fw-semibold"
+                                        for="adv_enable"
+                                >
+
+                                    Advertisement System
+
+                                </label>
+
+                            </div>
+
+                            <div class="form-text">
+
+                                Enable advertisements on the homepage.
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | Category Settings
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mb-4">
+
+                    <h6 class="fw-semibold mb-3">
+
+                        Category Settings
+
+                    </h6>
+
+
+                    <div class="row g-4">
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="exclude_category"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Excluded Category ID
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    type="text"
+                                    id="exclude_category"
+                                    name="exclude_category"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_general['exclude_category_id'] ?? ''
+                                    ); ?>"
+                                    placeholder="Enter category ID"
+                            >
+
+                            <div class="form-text">
+
+                                Enter the category ID that should be excluded.
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | SMTP Settings
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mb-4">
+
+                    <h6 class="fw-semibold mb-3">
+
+                        SMTP Settings
+
+                    </h6>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- Host -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="host-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Host
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="host-fs"
+                                    type="text"
+                                    name="host-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['host'] ?? ''
+                                    ); ?>"
+                                    placeholder="smtp.example.com"
+                            >
+
+                        </div>
+
+
+                        <!-- Port -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="port-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Port
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="port-fs"
+                                    type="text"
+                                    name="port-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['port'] ?? ''
+                                    ); ?>"
+                                    placeholder="587"
+                            >
+
+                        </div>
+
+
+                        <!-- Username -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="username-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Username
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="username-fs"
+                                    type="text"
+                                    name="username-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['username'] ?? ''
+                                    ); ?>"
+                                    placeholder="SMTP username"
+                            >
+
+                        </div>
+
+
+                        <!-- Password -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="password-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Password
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="password-fs"
+                                    type="password"
+                                    name="password-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['password'] ?? ''
+                                    ); ?>"
+                                    placeholder="SMTP password"
+                            >
+
+                        </div>
+
+
+                        <!-- From Email -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="from-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                From Email
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="from-fs"
+                                    type="email"
+                                    name="from-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['from'] ?? ''
+                                    ); ?>"
+                                    placeholder="no-reply@example.com"
+                            >
+
+                        </div>
+
+
+                        <!-- From Name -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="FormName-fs"
+                                    class="form-label fw-semibold"
+                            >
+
+                                From Name
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="FormName-fs"
+                                    type="text"
+                                    name="FormName-fs"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_smtp['FormName'] ?? ''
+                                    ); ?>"
+                                    placeholder="Website Name"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <hr class="my-4">
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | Website Links
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mb-4">
+
+                    <h6 class="fw-semibold mb-3">
+
+                        Website Links
+
+                    </h6>
+
+
+                    <div class="row g-4">
+
+
+                        <!-- Enamad -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="input-enamad"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Enamad Link
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="input-enamad"
+                                    type="text"
+                                    name="input-enamad"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_general['link_enamad'] ?? ''
+                                    ); ?>"
+                                    placeholder="Enter Enamad URL"
+                            >
+
+                        </div>
+
+
+                        <!-- Zarinpal -->
+
+                        <div class="col-12 col-md-6">
+
+                            <label
+                                    for="input-zarinpal"
+                                    class="form-label fw-semibold"
+                            >
+
+                                Zarinpal Link
+
+                            </label>
+
+                            <input
+                                    class="form-control"
+                                    id="input-zarinpal"
+                                    type="text"
+                                    name="input-zarinpal"
+                                    value="<?php echo esc_attr(
+                                        $setting_website_general['link_zarinpal'] ?? ''
+                                    ); ?>"
+                                    placeholder="Enter Zarinpal URL"
+                            >
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <!--
+                |--------------------------------------------------------------------------
+                | Save
+                |--------------------------------------------------------------------------
+                -->
+
+                <div class="mt-4 pt-3 border-top">
+
+                    <?php
+
+                    wp_nonce_field(
+                        '_nonce_tns_setting_general',
+                        '_nonce_tns_setting_general'
+                    );
+
+                    ?>
+
+                    <button
+                            type="submit"
+                            name="submit"
+                            class="btn btn-primary px-4"
+                    >
+
+                        <i class="fas fa-save me-2"></i>
+
+                        Save Settings
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+<?php endif;
