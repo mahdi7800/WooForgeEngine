@@ -7,90 +7,226 @@ add_action('admin_menu', 'wooen_register_menu');
 
 function wooen_register_menu(): void
 {
-    add_menu_page(
-        'Theme Settings',
-        'Theme Settings',
-        'manage_options',
-        'setting_shop',
-        'setting_shop_layout',
-        'dashicons-sos',
-        25
-    );
+    $locale = get_locale();
+    if ($locale === 'fa_IR') {
+        // منوی اصلی تنظیمات قالب
+        add_menu_page(
+            'تنظیمات قالب',
+            'تنظیمات قالب',
+            'manage_options',
+            'setting_shop',
+            'setting_shop_layout',
+            'dashicons-sos',
+            25
+        );
 
-
-    add_submenu_page(
-        'setting_shop',
-        'General Settings',
-        'General Settings',
-        'manage_options',
-        'setting_shop_tab_one',
-        'setting_shop_layout'
-    );
-
-
-    add_submenu_page(
-        'setting_shop',
-        'Slider Management',
-        'Slider Management',
-        'manage_options',
-        'setting_shop_tab_two',
-        'setting_shop_layout'
-    );
-
-
-    add_submenu_page(
-        'setting_shop',
-        'Banner Management',
-        'Banner Management',
-        'manage_options',
-        'setting_shop_tab_three',
-        'setting_shop_layout'
-    );
-
-
-    add_submenu_page(
-        'setting_shop',
-        'Contact Us',
-        'Contact Us',
-        'manage_options',
-        'setting_shop_tab_four',
-        'setting_shop_layout'
-    );
-
-
-    add_submenu_page(
-        'setting_shop',
-        'Social Media Management',
-        'Social Media Management',
-        'manage_options',
-        'setting_shop_tab_five',
-        'setting_shop_layout'
-    );
-
-
-    add_submenu_page(
-        'setting_shop',
-        'Frequently Asked Questions (FAQ)',
-        'Frequently Asked Questions (FAQ)',
-        'manage_options',
-        'setting_shop_tab_six',
-        'setting_shop_layout'
-    );
-    $general_settings = get_option('_wooen_settings_set_general', []);
-    $new_setting = isset($general_settings['newsletter_enable'])
-        ? $general_settings['newsletter_enable']
-        : 'no';
-    if($new_setting === 'yes') {
+        // تنظیمات عمومی
         add_submenu_page(
             'setting_shop',
-            'Newsletter Management',
-            'Newsletter Management',
+            'تنظیمات عمومی',
+            'تنظیمات عمومی',
             'manage_options',
-            'setting_shop_tab_seven',
+            'setting_shop_tab_one',
             'setting_shop_layout'
         );
-    }
 
+        // مدیریت اسلایدر
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت اسلایدر',
+            'مدیریت اسلایدر',
+            'manage_options',
+            'setting_shop_tab_two',
+            'setting_shop_layout'
+        );
+
+        // مدیریت بنرها
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت بنرها',
+            'مدیریت بنرها',
+            'manage_options',
+            'setting_shop_tab_three',
+            'setting_shop_layout'
+        );
+
+        // اطلاعات تماس
+        add_submenu_page(
+            'setting_shop',
+            'اطلاعات تماس',
+            'اطلاعات تماس',
+            'manage_options',
+            'setting_shop_tab_four',
+            'setting_shop_layout'
+        );
+
+        // مدیریت شبکه‌های اجتماعی
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت شبکه‌های اجتماعی',
+            'مدیریت شبکه‌های اجتماعی',
+            'manage_options',
+            'setting_shop_tab_five',
+            'setting_shop_layout'
+        );
+
+        // سوالات متداول
+        add_submenu_page(
+            'setting_shop',
+            'سوالات متداول (FAQ)',
+            'سوالات متداول (FAQ)',
+            'manage_options',
+            'setting_shop_tab_six',
+            'setting_shop_layout'
+        );
+
+        // دریافت تنظیمات عمومی
+        $general_settings = get_option('_shw_settings_set_general', []);
+
+        // بررسی فعال بودن خبرنامه
+        $new_setting = isset($general_settings['newsletter_enable'])
+            ? $general_settings['newsletter_enable']
+            : 'no';
+
+        // نمایش منوی خبرنامه در صورت فعال بودن
+        if ($new_setting === 'yes') {
+
+            add_submenu_page(
+                'setting_shop',
+                'مدیریت خبرنامه',
+                'مدیریت خبرنامه',
+                'manage_options',
+                'setting_shop_tab_seven',
+                'setting_shop_layout'
+            );
+
+        }
+
+        /*
+        // مدیریت اعلان‌ها
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت اعلان‌ها',
+            'مدیریت اعلان‌ها',
+            'manage_options',
+            'setting_shop_tab_eight',
+            'setting_shop_layout'
+        );
+        */
+
+        // بررسی فعال بودن ثبت‌نام از طریق پیامک
+        $sms_setting = isset($general_settings['register_from_sms_enable'])
+            ? $general_settings['register_from_sms_enable']
+            : 'no';
+
+        // نمایش تنظیمات پیامک در صورت فعال بودن
+        if ($sms_setting === 'yes') {
+
+            add_submenu_page(
+                'setting_shop',
+                'تنظیمات پیامک',
+                'تنظیمات پیامک',
+                'manage_options',
+                'setting_shop_tab_nine',
+                'setting_shop_layout'
+            );
+
+        }
+
+        /*
+        // تنظیمات علاقه‌مندی‌ها
+        add_submenu_page(
+            'edit.php',
+            'علاقه‌مندی‌ها',
+            'علاقه‌مندی‌ها',
+            'manage_options',
+            'wishlist_setting',
+            'shw_wishlist_setting_list_layout'
+        );
+        */
+    }else{
+        add_menu_page(
+            'Theme Settings',
+            'Theme Settings',
+            'manage_options',
+            'setting_shop',
+            'setting_shop_layout',
+            'dashicons-sos',
+            25
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'General Settings',
+            'General Settings',
+            'manage_options',
+            'setting_shop_tab_one',
+            'setting_shop_layout'
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'Slider Management',
+            'Slider Management',
+            'manage_options',
+            'setting_shop_tab_two',
+            'setting_shop_layout'
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'Banner Management',
+            'Banner Management',
+            'manage_options',
+            'setting_shop_tab_three',
+            'setting_shop_layout'
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'Contact Us',
+            'Contact Us',
+            'manage_options',
+            'setting_shop_tab_four',
+            'setting_shop_layout'
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'Social Media Management',
+            'Social Media Management',
+            'manage_options',
+            'setting_shop_tab_five',
+            'setting_shop_layout'
+        );
+
+
+        add_submenu_page(
+            'setting_shop',
+            'Frequently Asked Questions (FAQ)',
+            'Frequently Asked Questions (FAQ)',
+            'manage_options',
+            'setting_shop_tab_six',
+            'setting_shop_layout'
+        );
+        $general_settings = get_option('_shw_settings_set_general', []);
+        $new_setting = isset($general_settings['newsletter_enable']) ? $general_settings['newsletter_enable'] : 'no';
+
+        if ($new_setting === 'yes') {
+            add_submenu_page(
+                'setting_shop',
+                'Newsletter Management',
+                'Newsletter Management',
+                'manage_options',
+                'setting_shop_tab_seven',
+                'setting_shop_layout'
+            );
+        }
 
 
 //    add_submenu_page(
@@ -103,23 +239,22 @@ function wooen_register_menu(): void
 //    );
 
 
+        $sms_setting = isset($general_settings['register_from_sms_enable'])
+            ? $general_settings['register_from_sms_enable']
+            : 'no';
+        if ($sms_setting === 'yes') {
 
-    $sms_setting = isset($general_settings['register_from_sms_enable'])
-        ? $general_settings['register_from_sms_enable']
-        : 'no';
-    if ($sms_setting === 'yes') {
+            add_submenu_page(
+                'setting_shop',
+                'SMS Settings',
+                'SMS Settings',
+                'manage_options',
+                'setting_shop_tab_nine',
+                'setting_shop_layout'
+            );
+        }
 
-    add_submenu_page(
-        'setting_shop',
-        'SMS Settings',
-        'SMS Settings',
-        'manage_options',
-        'setting_shop_tab_nine',
-        'setting_shop_layout'
-    );
-    }
-
-    // SMS Settings - Only available when enabled
+        // SMS Settings - Only available when enabled
 
 
 //    add_submenu_page(
@@ -131,6 +266,7 @@ function wooen_register_menu(): void
 //        'shw_wishlist_setting_list_layout',
 //        ''
 //    );
+    }
 }
 
 
@@ -165,16 +301,81 @@ function setting_shop_layout()
     // Retrieve settings again for the SMS tab
     $general_settings = get_option('_shw_settings_set_general', []);
 
-    $sms_setting = isset($general_settings['register_from_sms_enable'])
-        ? $general_settings['register_from_sms_enable']
-        : 'no';
-    $new_setting = isset($general_settings['newsletter_enable'])
-        ? $general_settings['newsletter_enable']
-        : 'no';
+    $sms_setting = isset($general_settings['register_from_sms_enable']) ? $general_settings['register_from_sms_enable'] : 'no';
+    $new_setting = isset($general_settings['newsletter_enable']) ? $general_settings['newsletter_enable'] : 'no';
     ?>
 
     <div class="wrap">
+        <?php $locale = get_locale();
+        if ($locale === 'fa_IR') : ?>
+            <h1 class="nav-tab-wrapper">
 
+                <a
+                        href="?page=setting_shop_tab_one"
+                        class="nav-tab <?php echo $tab === 'tab_one' ? 'nav-tab-active' : ''; ?>"
+                >
+                    تنظیمات عمومی
+                </a>
+
+                <a
+                        href="?page=setting_shop_tab_two"
+                        class="nav-tab <?php echo $tab === 'tab_two' ? 'nav-tab-active' : ''; ?>"
+                >
+                    تنظیمات اسلایدر
+                </a>
+
+                <a
+                        href="?page=setting_shop_tab_three"
+                        class="nav-tab <?php echo $tab === 'tab_three' ? 'nav-tab-active' : ''; ?>"
+                >
+                    مدیریت بنرها
+                </a>
+
+                <a
+                        href="?page=setting_shop_tab_four"
+                        class="nav-tab <?php echo $tab === 'tab_four' ? 'nav-tab-active' : ''; ?>"
+                >
+                    اطلاعات تماس
+                </a>
+
+                <a
+                        href="?page=setting_shop_tab_five"
+                        class="nav-tab <?php echo $tab === 'tab_five' ? 'nav-tab-active' : ''; ?>"
+                >
+                    شبکه‌های اجتماعی
+                </a>
+
+                <a
+                        href="?page=setting_shop_tab_six"
+                        class="nav-tab <?php echo $tab === 'tab_six' ? 'nav-tab-active' : ''; ?>"
+                >
+                    سوالات متداول (FAQ)
+                </a>
+
+                <?php if ($new_setting === 'yes') : ?>
+
+                    <a
+                            href="?page=setting_shop_tab_seven"
+                            class="nav-tab <?php echo $tab === 'tab_seven' ? 'nav-tab-active' : ''; ?>"
+                    >
+                        مدیریت خبرنامه
+                    </a>
+
+                <?php endif; ?>
+
+                <?php if ($sms_setting === 'yes') : ?>
+
+                    <a
+                            href="?page=setting_shop_tab_nine"
+                            class="nav-tab <?php echo $tab === 'tab_nine' ? 'nav-tab-active' : ''; ?>"
+                    >
+                        تنظیمات پیامک
+                    </a>
+
+                <?php endif; ?>
+
+            </h1>
+        <?php else : ?>
         <h1 class="nav-tab-wrapper">
 
             <a href="?page=setting_shop_tab_one"
@@ -237,7 +438,7 @@ function setting_shop_layout()
 
 
         </h1>
-
+<?php endif; ?>
 
         <div class="tab-content" style="margin-top: 20px;">
 
