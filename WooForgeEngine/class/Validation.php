@@ -2,23 +2,7 @@
 
 class Validation
 {
-    /**
-     * Current WordPress locale.
-     *
-     * @var string
-     */
-    private string $locale = '';
-
-    /**
-     * Get the current WordPress locale.
-     *
-     * @return string
-     */
-    private function setLocale(): string
-    {
-        $this->locale = get_locale();
-        return $this->locale;
-    }
+    use LocaleTrait;
 
     /**
      * Validate newsletter email.
@@ -334,7 +318,7 @@ class Validation
        }
        return true;
    }
-   
+
     /**
      * Validate a new password and its confirmation.
      *
