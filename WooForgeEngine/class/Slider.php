@@ -24,6 +24,7 @@
  */
 class Slider extends CRUD
 {
+    use LocaleTrait;
     /**
      * WordPress database object.
      *
@@ -100,10 +101,18 @@ class Slider extends CRUD
                 ];
                 $format = ['%s','%s','%s','%s','%s'];
                 $stmt = $this->db->insert($this->table, $data, $format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Settings saved successfully!</p></div>';
-                }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to save the slider!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>تنظیمات با موفقیت ذخیره شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ذخیره اسلایدر ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Settings saved successfully!</p></div>';
+                    }else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to save the slider!</p></div>';
+                    }
                 }
             }
         }
@@ -141,10 +150,18 @@ class Slider extends CRUD
                 $format = ['%s','%s','%s','%s','%s'];
                 $where_format = ['%d'];
                 $stmt = $this->db->update($this->table, $data, ['id' => $id],$format , $where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Changes saved successfully!</p></div>';
-                }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to update the slider!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>تغییرات با موفقیت ذخیره شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ویرایش اسلایدر ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Changes saved successfully!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to update the slider!</p></div>';
+                    }
                 }
 
             }
@@ -173,10 +190,18 @@ class Slider extends CRUD
                 $where = ['id' => $slider_id];
                 $where_format = ['%d'];
                 $stmt = $this->db->delete($this->table, $where, $where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>The selected slider has been deleted!</p></div>';
-                } else {
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the slider!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>اسلایدر انتخاب‌شده با موفقیت حذف شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>حذف اسلایدر ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>The selected slider has been deleted!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the slider!</p></div>';
+                    }
                 }
             }
         }
