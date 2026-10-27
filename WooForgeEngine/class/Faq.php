@@ -29,6 +29,7 @@
  */
 class Faq extends CRUD
 {
+    use LocaleTrait;
     /**
      * WordPress database object.
      *
@@ -136,10 +137,18 @@ class Faq extends CRUD
                 $format = ['%s','%s','%d'];
                 $where_format = ['%d'];
                 $stmt = $this->db->update($this->table_detail,$data,$where,$format,$where_format);
-                if ($stmt !== false) {
-                    $this->message  = '<div class="notice notice-success is-dismissible"><p>FAQ question and answer updated successfully!</p></div>';
-                } else {
-                    $this->message  = '<div class="notice notice-error is-dismissible"><p>Failed to update the FAQ question and answer!</p></div>';
+                if ($this->setLocale() ==='fa_IR') {
+                    if ($stmt !== false) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>سؤال و پاسخ متداول با موفقیت ویرایش شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ویرایش سؤال و پاسخ متداول ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt !== false) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>FAQ question and answer updated successfully!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to update the FAQ question and answer!</p></div>';
+                    }
                 }
             }
         }
@@ -227,10 +236,18 @@ class Faq extends CRUD
                 $data = ['header' => sanitize_text_field($_POST['tnm-headers'])];
                 $format = ['%s'];
                 $stmt = $this->db->insert($this->table, $data, $format);
-                if ($stmt !== false){
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>FAQ header created successfully!</p></div>';
-                } else {
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to create the FAQ header!</p></div>';
+                if ($this->setLocale() ==='fa_IR') {
+                    if ($stmt !== false) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>سربرگ سؤالات متداول با موفقیت ایجاد شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ایجاد سربرگ سؤالات متداول ناموفق بود!</p></div>';
+                    }
+                }else{
+                    if ($stmt !== false){
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>FAQ header created successfully!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to create the FAQ header!</p></div>';
+                    }
                 }
             }
         }
@@ -255,11 +272,7 @@ class Faq extends CRUD
             if (!isset($_POST['_nonce_tnm_setting_faq_details']) || !wp_verify_nonce($_POST['_nonce_tnm_setting_faq_details'], '_nonce_tnm_setting_faq_details')) {
                 $this->message = '<div class="notice notice-error is-dismissible"><p>Security validation failed while creating the FAQ question and answer!</p></div>';
             } else {
-
-
-
                 $faq_id = isset($_POST['faq_header_id']) ? intval($_POST['faq_header_id']) : 0;
-
                 if($faq_id > 0) {
                     $data = [
                         'faq_question' => sanitize_text_field($_POST['faq-question']),
@@ -268,11 +281,18 @@ class Faq extends CRUD
                     ];
                     $format = ['%s','%s','%d'];
                     $stmt = $this->db->insert($this->table_detail, $data, $format);
-
-                    if ($stmt !== false){
-                        $this->message = '<div class="notice notice-success is-dismissible"><p>FAQ question and answer created successfully!</p></div>';
-                    } else {
-                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to create the FAQ question and answer!</p></div>';
+                    if ($this->setLocale() ==='fa_IR') {
+                        if ($stmt !== false) {
+                            $this->message = '<div class="notice notice-success is-dismissible"><p>سؤال و پاسخ متداول با موفقیت ایجاد شد!</p></div>';
+                        } else {
+                            $this->message = '<div class="notice notice-error is-dismissible"><p>ایجاد سؤال و پاسخ متداول ناموفق بود!</p></div>';
+                        }
+                    }else {
+                        if ($stmt !== false) {
+                            $this->message = '<div class="notice notice-success is-dismissible"><p>FAQ question and answer created successfully!</p></div>';
+                        } else {
+                            $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to create the FAQ question and answer!</p></div>';
+                        }
                     }
                 } else {
                     $this->message = '<div class="notice notice-error is-dismissible"><p>Please select an FAQ header first!</p></div>';
@@ -301,10 +321,18 @@ class Faq extends CRUD
                 $where = ['ID' => $ID];
                 $where_format = ['%d'];
                 $stmt = $this->db->delete($this->table,$where, $where_format);
-                if($stmt !== false){
-                    $message = '<div class="notice notice-success is-dismissible"><p>FAQ header deleted successfully!</p></div>';
-                }else{
-                    $message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the FAQ header!</p></div>';
+                if ($this->setLocale() ==='fa_IR') {
+                    if ($stmt !== false) {
+                        $message = '<div class="notice notice-success is-dismissible"><p>سربرگ سؤالات متداول با موفقیت حذف شد!</p></div>';
+                    } else {
+                        $message = '<div class="notice notice-error is-dismissible"><p>حذف سربرگ سؤالات متداول ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt !== false) {
+                        $message = '<div class="notice notice-success is-dismissible"><p>FAQ header deleted successfully!</p></div>';
+                    } else {
+                        $message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the FAQ header!</p></div>';
+                    }
                 }
             }
         }
@@ -330,11 +358,18 @@ class Faq extends CRUD
                 $where = ['ID'=>$ID];
                 $where_format = ['%d'];
                 $stmt = $this->db->delete($this->table_detail,$where ,$where_format);
-
-                if($stmt !== false){
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>FAQ question and answer deleted successfully!</p></div>';
-                }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the FAQ question and answer!</p></div>';
+                if ($this->setLocale() ==='fa_IR') {
+                    if ($stmt !== false) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>سؤال و پاسخ متداول با موفقیت حذف شدند!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>حذف سؤال و پاسخ متداول ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt !== false) {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>FAQ question and answer deleted successfully!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the FAQ question and answer!</p></div>';
+                    }
                 }
             }
         }
