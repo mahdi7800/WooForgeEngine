@@ -11,7 +11,7 @@
 class Wishlist
 {
     use SecurityTrait;
-
+    use LocaleTrait;
     /**
      * WordPress database object.
      *
@@ -135,11 +135,20 @@ class Wishlist
         ];
         $where_format = ['%d','%d'];
         $deleted = $this->db->delete($this->table_wishlist,$where, $where_format);
-        if($deleted){
-            wp_send_json(['success'=>true,'message'=>'Product deleted successfully'],200);
+        if ($this->setLocale() ==='fa_IR') {
+            if ($deleted) {
+                wp_send_json(['success' => true, 'message' => 'محصول با موفقیت حذف شد.'], 200);
+            } else {
+                wp_send_json(['error' => true, 'message' => 'حذف محصول ناموفق بود.'], 500);
+            }
         }else{
-            wp_send_json(['error'=>true,'message'=>'Product delete failed'],500);
+            if($deleted){
+                wp_send_json(['success'=>true,'message'=>'Product deleted successfully'],200);
+            }else{
+                wp_send_json(['error'=>true,'message'=>'Product delete failed'],500);
+            }
         }
+
     }
 
 
@@ -175,11 +184,20 @@ class Wishlist
             ];
             $format = ['%d','%d','%s','%s','%s'];
             $inserted = $this->db->insert($this->table_wishlist,$data,$format);
+        if ($this->setLocale() ==='fa_IR') {
+            if ($inserted) {
+                wp_send_json(['success' => true, 'message' => 'محصول با موفقیت اضافه شد.'], 200);
+            } else {
+                wp_send_json(['error' => true, 'message' => 'افزودن محصول ناموفق بود.'], 500);
+            }
+        }else{
             if($inserted){
                 wp_send_json(['success'=>true,'message'=>'Product added successfully'],200);
             }else{
                 wp_send_json(['error'=>true,'message'=>'Product added failed'],500);
             }
+        }
+
     }
 
 
@@ -244,6 +262,7 @@ class Wishlist
         }
     }
 }
+
 //Wishlist
 //│
 //├── __construct()
