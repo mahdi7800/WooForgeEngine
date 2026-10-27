@@ -28,6 +28,7 @@
 
 class Banner extends  CRUD
 {
+    use LocaleTrait;
 
     /**
      * WordPress database object.
@@ -107,10 +108,18 @@ class Banner extends  CRUD
                 ];
                 $format = ['%s' , '%s' , '%s'];
                 $stmt = $this->db->insert($this->table,$data,$format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Banner saved successfully!</p></div>';
-                }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to save the banner!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>بنر با موفقیت ذخیره شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ذخیره بنر ناموفق بود!</p></div>';
+                    }
+                }else {
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Banner saved successfully!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to save the banner!</p></div>';
+                    }
                 }
             }
         }
@@ -146,10 +155,18 @@ class Banner extends  CRUD
                 $format = ['%s' , '%s' , '%s'];
                 $where_format = ['%d'];
                 $stmt = $this->db->update($this->table, $data, $where , $format, $where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Banner updated successfully!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>بنر با موفقیت ویرایش شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ویرایش بنر ناموفق بود!</p></div>';
+                    }
                 }else{
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Failed to update the banner!</p></div>';
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Banner updated successfully!</p></div>';
+                    }else{
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Failed to update the banner!</p></div>';
+                    }
                 }
             }
         }
@@ -177,10 +194,18 @@ class Banner extends  CRUD
                 $where = [ 'id'=>$banner_id ];
                 $where_format = ['%d'];
                 $stmt = $this->db->delete($this->table,$where,$where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Banner updated successfully!</p></div>';
-                }else {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Failed to update the banner!</p></div>';
+                if ($this->setLocale() ==='fa_IR'){
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>بنر با موفقیت ویرایش شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>ویرایش بنر ناموفق بود!</p></div>';
+                    }
+                }else{
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Banner updated successfully!</p></div>';
+                    }else {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Failed to update the banner!</p></div>';
+                    }
                 }
             }
 
@@ -256,7 +281,7 @@ class Banner extends  CRUD
      */
     public function wooen_get_banner_to_front(): array
     {
-        $stmt = $this->db->get_results($this->db->prepare("SELECT * FROM {$this->table}ORDER BY id DESC LIMIT 3"),ARRAY_A);
+        $stmt = $this->db->get_results($this->db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC LIMIT 3"),ARRAY_A);
         return (array) $stmt;
     }
 
