@@ -17,6 +17,7 @@
 class Newsletter extends CRUD
 {
     use SecurityTrait;
+    use LocaleTrait;
     /**
      * WordPress database object.
      *
@@ -39,7 +40,7 @@ class Newsletter extends CRUD
      * @var string
      */
 
-    private string $message = '' ;
+    private string $message = ' ' ;
 
     /**
      * Subscriber email address.
@@ -64,7 +65,6 @@ class Newsletter extends CRUD
        $this->db = $wpdb;
        $this->table = $wpdb->prefix . "wooen_plugin_newsletter";
        $this->wooen_registerHooks();
-
    }
 
     /**
@@ -148,17 +148,25 @@ class Newsletter extends CRUD
      * @return void
      */
 
-    protected function wooen_insert(): void
+    public function wooen_insert(): void
     {
         // TODO: Implement wooen_insert() method.
 
         $data = ['email'=>$this->email];
         $format = ['%s'];
         $stmt = $this->db->insert($this->table,$data,$format);
-        if ($stmt) {
-            wp_send_json(['success' => true,'message'=>'You have successfully subscribed to our newsletter.'],200);
-        }else{
-            wp_send_json( [ 'error' => true, 'message' => 'An error occurred while saving your email address.' ], 500 );
+        if ($this->setLocale() ==='fa_IR'){
+            if ($stmt) {
+                wp_send_json(['success' => true, 'message' => 'شما با موفقیت در خبرنامه ما عضو شدید.'], 200);
+            } else {
+                wp_send_json(['error' => true, 'message' => 'هنگام ذخیره آدرس ایمیل شما خطایی رخ داد.'], 500);
+            }
+        }else {
+            if ($stmt) {
+                wp_send_json(['success' => true, 'message' => 'You have successfully subscribed to our newsletter.'], 200);
+            } else {
+                wp_send_json(['error' => true, 'message' => 'An error occurred while saving your email address.'], 500);
+            }
         }
     }
 
@@ -179,10 +187,18 @@ class Newsletter extends CRUD
                 $where = ['ID' => $user_id];
                 $where_format = ['%d'];
                 $stmt = $this->db->delete($this->table,$where,$where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Newsletter subscriber deleted successfully!</p></div>';
+                if ($this->setLocale() ==='fa_IR') {
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>مشترک خبرنامه با موفقیت حذف شد!</p></div>';
+                    } else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>حذف مشترک خبرنامه ناموفق بود!</p></div>';
+                    }
                 }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the newsletter subscriber!</p></div>';
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Newsletter subscriber deleted successfully!</p></div>';
+                    }else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to delete the newsletter subscriber!</p></div>';
+                    }
                 }
             }
         }
@@ -211,10 +227,18 @@ class Newsletter extends CRUD
                  $where = ['ID' => $user_id];
                  $where_format = ['%d'];
                 $stmt = $this->db->update($this->table,$data,$where,$format,$where_format);
-                if ($stmt) {
-                    $this->message = '<div class="notice notice-success is-dismissible"><p>Newsletter status updated successfully!</p></div>';
-                }else{
-                    $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to update the newsletter status!</p></div>';
+                 if ($this->setLocale() ==='fa_IR'){
+                     if ($stmt) {
+                         $this->message = '<div class="notice notice-success is-dismissible"><p>وضعیت خبرنامه با موفقیت به‌روزرسانی شد!</p></div>';
+                     } else {
+                         $this->message = '<div class="notice notice-error is-dismissible"><p>به‌روزرسانی وضعیت خبرنامه ناموفق بود!</p></div>';
+                     }
+                 }else{
+                    if ($stmt) {
+                        $this->message = '<div class="notice notice-success is-dismissible"><p>Newsletter status updated successfully!</p></div>';
+                    }else {
+                        $this->message = '<div class="notice notice-error is-dismissible"><p>Failed to update the newsletter status!</p></div>';
+                    }
                 }
              }
          }
