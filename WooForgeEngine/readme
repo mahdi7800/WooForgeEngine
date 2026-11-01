@@ -1,0 +1,373 @@
+# WooForgeEngine
+
+**A Modular WordPress Plugin for Custom Website Functionality**
+
+[فارسی](#فارسی) | [English](#english)
+
+---
+
+# فارسی
+
+## معرفی
+
+**WooForgeEngine** یک افزونه توسعه‌یافته برای وردپرس است که با هدف مدیریت و پیاده‌سازی قابلیت‌های اختصاصی وب‌سایت طراحی شده است.
+
+این افزونه با معماری شی‌گرا (OOP) توسعه داده شده و تمرکز اصلی آن بر جداسازی منطق برنامه از رابط کاربری است. به این ترتیب، توسعه‌دهندگان می‌توانند قابلیت‌های موردنیاز خود را بدون وابستگی مستقیم به ساختار ظاهری قالب مدیریت کنند.
+
+WooForgeEngine برای پروژه‌هایی مناسب است که به قابلیت‌های اختصاصی، مدیریت Ajax، سیستم‌های کاربری و ابزارهای مرتبط با WooCommerce نیاز دارند.
+
+## امکانات
+
+- **سیستم احراز هویت**
+  - ورود کاربران
+  - ثبت‌نام کاربران
+  - بازیابی رمز عبور
+  - تغییر رمز عبور
+  - تولید رمز عبور تصادفی
+  - ارسال و تأیید کد یک‌بارمصرف (OTP)
+
+- **سیستم ارتباط با کاربران**
+  - فرم تماس با ما
+  - سیستم خبرنامه
+  - مدیریت اعلان‌ها و پیام‌های Ajax
+
+- **سیستم‌های تعاملی**
+  - علاقه‌مندی محصولات (Wishlist)
+  - ذخیره و نشان‌گذاری مطالب
+  - سیستم نظرات و تعامل کاربران
+
+- **مدیریت محتوای سایت**
+  - مدیریت اسلایدر
+  - مدیریت بنرها
+  - مدیریت پرسش‌های متداول (FAQ)
+
+- **امکانات ارتباطی**
+  - تنظیمات SMTP
+  - پشتیبانی از سرویس‌های ارسال پیامک
+  - ارسال کد تأیید و پیام‌های بازیابی رمز عبور
+
+- **ابزارهای کمکی**
+  - تبدیل تاریخ میلادی و شمسی
+  - نمایش زمان نسبی
+  - محاسبه درصد تخفیف محصولات
+  - نمایش قیمت محصولات WooCommerce
+  - نمایش وضعیت موجودی محصولات
+  - نمایش برچسب تخفیف
+
+## ساختار پروژه
+
+ساختار اصلی افزونه به شکل زیر سازمان‌دهی شده است:
+
+```text
+WooForgeEngine/
+│
+├── _inc/
+│   ├── ajax/
+│   │   ├── auth/
+│   │   ├── comment-system/
+│   │   ├── like-system/
+│   │   ├── newsletter/
+│   │   ├── wishlist/
+│   │   └── setting/
+│   │
+│   ├── class/
+│   └── ...
+│
+├── assets/
+│
+├── class/
+│
+├── utility/
+│
+├── view/
+│   ├── admin/
+│   └── front/
+│
+├── Core.php
+└── WooForgeEngine.php
+```
+
+> ساختار فوق نمایی از بخش‌های اصلی پروژه است و ممکن است با توسعه افزونه تغییر کند.
+
+## نصب
+
+1. مخزن افزونه را دانلود یا Clone کنید.
+2. پوشه `WooForgeEngine` را در مسیر زیر قرار دهید:
+
+```text
+wp-content/plugins/
+```
+
+3. وارد پیشخوان وردپرس شوید.
+4. از بخش افزونه‌ها، WooForgeEngine را فعال کنید.
+5. تنظیمات موردنیاز افزونه را از پنل مدیریت انجام دهید.
+
+## نحوه استفاده و اتصال به قالب
+
+WooForgeEngine برای اتصال به قالب از ساختاری مبتنی بر HTML و JavaScript استفاده می‌کند.
+
+در این معماری:
+
+1. قالب، عناصر HTML موردنیاز را با شناسه‌ها (ID) و کلاس‌های مشخص ایجاد می‌کند.
+2. JavaScript افزونه این عناصر را شناسایی می‌کند.
+3. اطلاعات فرم‌ها از طریق Ajax ارسال می‌شوند.
+4. افزونه درخواست‌ها را پردازش کرده و پاسخ مناسب را برمی‌گرداند.
+
+بنابراین، توسعه‌دهنده قالب باید ساختار HTML موردنیاز هر قابلیت را مطابق مستندات افزونه پیاده‌سازی کند.
+
+**نکته:** WooForgeEngine در معماری فعلی خود برای این قابلیت‌ها به Shortcode متکی نیست.
+
+## نمونه اتصال خبرنامه
+
+برای فعال‌سازی فرم خبرنامه در قالب، ساختار HTML باید شناسه‌های موردنیاز افزونه را داشته باشد:
+
+```html
+<form id="wooen-plugin-newsletter">
+    <input
+        type="email"
+        id="wooen-input-email-newsletter"
+        placeholder="Email address"
+    >
+
+    <button type="submit" id="btn_newsletter">
+        Subscribe
+    </button>
+</form>
+```
+
+JavaScript افزونه این عناصر را شناسایی کرده و درخواست ثبت ایمیل را مدیریت می‌کند.
+
+## متدهای کاربردی
+
+افزونه تعدادی متد عمومی برای استفاده در قالب ارائه می‌دهد.
+
+| متد | توضیحات |
+|---|---|
+| `wooen_get_faq_to_front()` | دریافت اطلاعات پرسش‌های متداول |
+| `wooen_get_slider_to_front()` | دریافت اطلاعات اسلایدر |
+| `wooen_get_banner_to_front()` | دریافت اطلاعات بنرها |
+| `wooen_get_user_wishlist()` | دریافت محصولات موردعلاقه کاربر جاری |
+| `wooen_get_user_count_wishlist()` | دریافت تعداد محصولات موردعلاقه |
+| `wooen_date()` | تبدیل و قالب‌بندی تاریخ |
+| `wooen_get_time_ago()` | نمایش زمان نسبی |
+| `wooen_calculateDiscountPercentage()` | محاسبه درصد تخفیف |
+| `wooen_get_product_price()` | نمایش قیمت محصول |
+| `wooen_get_product_stock_label()` | نمایش وضعیت موجودی محصول |
+| `wooen_get_product_discount_label()` | نمایش برچسب تخفیف محصول |
+
+**توجه:** متدهای مرتبط با محصولات به WooCommerce و کلاس `WC_Product` وابسته هستند.
+
+## مستندات
+
+راهنمای کامل پیاده‌سازی و استفاده از قابلیت‌های افزونه در بخش راهنمای افزونه ارائه شده است.
+
+این راهنما شامل شناسه‌ها و کلاس‌های HTML موردنیاز، نحوه اتصال فرم‌ها و روش استفاده از متدهای عمومی است.
+
+## تکنولوژی‌های استفاده‌شده
+
+- PHP
+- WordPress
+- JavaScript
+- AJAX
+- MySQL
+- WooCommerce
+- OOP (Object-Oriented Programming)
+
+## توسعه‌دهنده
+
+**Mahdi Davoodi**
+
+- GitHub: [@mahdi7800](https://github.com/mahdi7800)
+
+---
+
+# English
+
+## Overview
+
+**WooForgeEngine** is a custom WordPress plugin designed to provide reusable functionality and application logic for WordPress websites.
+
+Built using Object-Oriented Programming (OOP), the plugin focuses on separating application logic from the presentation layer. This architecture allows developers to implement and manage custom website features without tightly coupling the plugin to a specific theme structure.
+
+WooForgeEngine is designed for projects that require custom functionality, AJAX-based operations, user management systems, and WooCommerce-related utilities.
+
+## Features
+
+- **Authentication System**
+  - User login
+  - User registration
+  - Password recovery
+  - Password changing
+  - Random password generation
+  - One-Time Password (OTP) sending and verification
+
+- **User Communication**
+  - Contact form
+  - Newsletter subscription
+  - AJAX notifications and messages
+
+- **Interactive Features**
+  - Product wishlist
+  - Post bookmarking
+  - Comment and user interaction system
+
+- **Content Management**
+  - Slider management
+  - Banner management
+  - Frequently Asked Questions (FAQ)
+
+- **Communication Services**
+  - SMTP configuration
+  - SMS gateway integration
+  - Verification and password recovery messages
+
+- **Utility Functions**
+  - Gregorian and Jalali date conversion
+  - Relative time formatting
+  - Product discount calculation
+  - WooCommerce product price output
+  - Product stock status
+  - Product discount labels
+
+## Project Structure
+
+The main project structure is organized as follows:
+
+```text
+WooForgeEngine/
+│
+├── _inc/
+│   ├── ajax/
+│   │   ├── auth/
+│   │   ├── comment-system/
+│   │   ├── like-system/
+│   │   ├── newsletter/
+│   │   ├── wishlist/
+│   │   └── setting/
+│   │
+│   ├── class/
+│   └── ...
+│
+├── assets/
+│
+├── class/
+│
+├── utility/
+│
+├── view/
+│   ├── admin/
+│   └── front/
+│
+├── Core.php
+└── WooForgeEngine.php
+```
+
+> This structure represents the main components of the project and may change during development.
+
+## Installation
+
+1. Download or clone the repository.
+2. Place the `WooForgeEngine` directory inside:
+
+```text
+wp-content/plugins/
+```
+
+3. Open your WordPress admin dashboard.
+4. Navigate to **Plugins**.
+5. Activate **WooForgeEngine**.
+6. Configure the required plugin settings.
+
+## Theme Integration
+
+WooForgeEngine uses an HTML and JavaScript-based integration architecture.
+
+The integration process works as follows:
+
+1. The theme provides the required HTML elements using predefined IDs and CSS classes.
+2. The plugin's JavaScript identifies these elements.
+3. Form data is submitted through AJAX requests.
+4. The plugin processes the requests and returns the appropriate responses.
+
+Theme developers must implement the required HTML structure for each feature according to the plugin documentation.
+
+**Note:** The current architecture does not rely on shortcodes for these features.
+
+## Newsletter Integration Example
+
+To integrate the newsletter form into a WordPress theme, use the required HTML selectors:
+
+```html
+<form id="wooen-plugin-newsletter">
+    <input
+        type="email"
+        id="wooen-input-email-newsletter"
+        placeholder="Email address"
+    >
+
+    <button type="submit" id="btn_newsletter">
+        Subscribe
+    </button>
+</form>
+```
+
+The plugin's JavaScript detects these elements and handles the newsletter subscription request through AJAX.
+
+## Public Utility Methods
+
+WooForgeEngine provides several public methods that can be used within WordPress themes.
+
+| Method | Description |
+|---|---|
+| `wooen_get_faq_to_front()` | Retrieves FAQ data |
+| `wooen_get_slider_to_front()` | Retrieves slider data |
+| `wooen_get_banner_to_front()` | Retrieves banner data |
+| `wooen_get_user_wishlist()` | Retrieves the current user's wishlist |
+| `wooen_get_user_count_wishlist()` | Returns the current user's wishlist item count |
+| `wooen_date()` | Converts and formats dates |
+| `wooen_get_time_ago()` | Formats relative time |
+| `wooen_calculateDiscountPercentage()` | Calculates the product discount percentage |
+| `wooen_get_product_price()` | Outputs product price HTML |
+| `wooen_get_product_stock_label()` | Outputs the product stock status |
+| `wooen_get_product_discount_label()` | Outputs the product discount label |
+
+**Note:** Product-related utility methods require WooCommerce and use the `WC_Product` class.
+
+## Documentation
+
+Detailed implementation and usage instructions are available through the plugin's documentation section.
+
+The documentation covers:
+
+- Required HTML IDs and CSS classes
+- Form integration
+- AJAX-based functionality
+- Public utility methods
+- Theme integration examples
+
+## Technologies
+
+- PHP
+- WordPress
+- JavaScript
+- AJAX
+- MySQL
+- WooCommerce
+- OOP (Object-Oriented Programming)
+
+## Developer
+
+**Mahdi Davoodi**
+
+- GitHub: [@mahdi7800](https://github.com/mahdi7800)
+
+---
+
+## License
+
+Add your project's license information here before publishing the repository.
+
+---
+
+**WooForgeEngine**
+*Custom functionality. Modular architecture. WordPress development.*
