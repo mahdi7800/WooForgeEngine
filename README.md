@@ -181,7 +181,7 @@ If you find WooForge Engine useful, consider supporting its development.
 Your support helps improve the project, maintain existing features, and develop new functionality.
 
 <p align="center">
-  <a href="YOUR_DONATION_LINK">
+  <a href="[YOUR_DONATION_LINK](https://daramet.com/d_mahdi47?webintent&donate=600000&message=thanks)">
     <strong>❤️ Support WooForge Engine</strong>
   </a>
 </p>
@@ -356,7 +356,7 @@ WooForge Engine با استفاده از ساختار شیءگرا و اجزای
 حمایت شما به نگهداری پروژه، توسعه قابلیت‌های جدید و بهبود امکانات فعلی کمک می‌کند.
 
 <p align="center">
-  <a href="YOUR_DONATION_LINK">
+  <a href="[YOUR_DONATION_LINK](https://daramet.com/d_mahdi47?webintent&donate=600000&message=thanks)">
     <strong>❤️ حمایت مالی از WooForge Engine</strong>
   </a>
 </p>
