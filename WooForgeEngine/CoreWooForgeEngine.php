@@ -1,13 +1,16 @@
 <?php
-/*
-Plugin Name: WooForge Engine
-Plugin URI: https://github.com/mahdi7800
-Description:
-Author: Mahdi Davoodi
-Version: 1.0.0
-Author URI: https://github.com/mahdi7800
-License: GPL-2.0+
-*/
+/**
+ * Plugin Name:       WooForge Engine
+ * Plugin URI:        https://github.com/mahdi7800/WooForgeEngine
+ * Description:       A powerful and extensible WordPress plugin that brings essential website functionality, user management, AJAX-driven interactions, and WooCommerce integration together in one modular solution.
+ * Version:           1.0.0
+ * Author:            Mahdi Davoodi
+ * Author URI:        https://github.com/mahdi7800
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain:       wooforge-engine
+ * Domain Path:       /languages
+ */
 
 defined( 'ABSPATH' ) || exit();
 
@@ -233,3 +236,8 @@ new CoreWooForgeEngine();
 new Newsletter();
 new Auth();
 new Notification ();
+new Banner();
+new Slider();
+new Faq();
+new Wishlist();
+
