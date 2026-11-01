@@ -1,159 +1,174 @@
-=== WooForge Engine ===
+# WooForge Engine
 
-Tags: ajax, contact-form, newsletter, user-management, woocommerce
-Requires PHP: 8.0
-Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+<p align="center">
+  <img src="WooForgeEngine-Logo.webp" alt="WooForge Engine Logo" width="220">
+</p>
 
-A modular WordPress plugin for user management, AJAX-powered functionality, and WooCommerce integration.
+<p align="center">
+  <strong>A Modular WordPress Plugin for Modern Website Functionality</strong>
+</p>
 
-== Description ==
+<p align="center">
+  <a href="https://github.com/mahdi7800/WooForgeEngine">
+    <img src="https://img.shields.io/badge/WordPress-Plugin-21759B?logo=wordpress&logoColor=white" alt="WordPress Plugin">
+  </a>
+  <img src="https://img.shields.io/badge/PHP-8.0%2B-777BB4?logo=php&logoColor=white" alt="PHP 8.0+">
+  <img src="https://img.shields.io/badge/Architecture-OOP-555555" alt="OOP">
+  <img src="https://img.shields.io/badge/License-GPL--2.0--or--later-blue" alt="GPL License">
+</p>
 
-WooForge Engine is an object-oriented WordPress plugin that provides reusable website functionality while keeping application logic separate from the theme's presentation layer.
+---
 
-It includes user authentication, AJAX-powered interactions, newsletter subscriptions, contact forms, content management tools, SMS integration, and WooCommerce-related utilities.
+## Overview
 
-The plugin uses predefined HTML IDs and CSS classes to connect its front-end functionality to WordPress themes. Theme developers can build their own markup and integrate it with the plugin without relying on shortcodes for the documented features.
+**WooForge Engine** is a modular WordPress plugin designed to provide reusable functionality for custom WordPress themes and websites.
 
-= Features =
+It brings together user authentication, AJAX-powered features, website utilities, content management tools, and WooCommerce-related functionality in one organized plugin.
 
-**User Authentication**
-* User login with email or username.
-* User registration.
-* Password recovery and password changing.
-* Random password generation.
-* SMS verification code generation and validation.
-* Optional phone-number registration support.
+The plugin focuses on functionality rather than presentation. Your theme remains responsible for the HTML structure, CSS styling, and overall user interface, while WooForge Engine handles the underlying logic and interactions.
 
-**Communication**
-* Contact form functionality.
-* Newsletter subscriptions.
-* New post email notifications.
-* SMTP configuration.
-* AJAX response messages and notifications.
+## Features
 
-**Interactive Features**
-* WooCommerce product wishlist.
-* Post bookmarking.
+### User Management
+- User login with email or username
+- User registration
+- Password recovery and password changes
+- Random password generation
+- SMS verification codes
+- Optional phone-number registration
 
-**Content Management**
-* Banner management.
-* Slider management.
-* FAQ management.
-* Administration settings.
-* Dashboard widgets and notifications.
+### AJAX & Communication
+- AJAX-powered form submissions
+- Contact form functionality
+- Newsletter subscriptions
+- New post email notifications
+- Custom AJAX response messages
 
-**SMS Integration**
-* Melipayamak SMS gateway.
-* SMS.ir gateway.
-* SMS verification workflows.
+### Website Management
+- Banner management
+- Slider management
+- FAQ management
+- Admin settings
+- Dashboard widgets and notifications
 
-**Utility Functions**
-* Gregorian and Jalali date conversion.
-* Relative time formatting.
-* Random password and verification-code generation.
-* WooCommerce discount calculation.
-* WooCommerce product price output.
-* Product stock-status labels.
-* Product discount labels.
+### WooCommerce Integration
+- Product wishlist
+- Product discount calculations
+- Custom product price output
+- Product stock labels
+- Product discount labels
 
-= WooCommerce Integration =
+### Additional Utilities
+- Post bookmarking
+- Persian and Gregorian date support
+- Relative time formatting
+- SMTP configuration
+- SMS gateway integration
 
-WooCommerce is needed for store-specific functionality, including product wishlist features and product utility methods.
+## Architecture
 
-General WordPress functionality is separate from these WooCommerce integrations.
+WooForge Engine follows an object-oriented and modular structure.
 
-== Installation ==
+Each feature is organized into its own classes and components to make the code easier to maintain and extend.
 
-1. Upload the `WooForge Engine` plugin folder to the `/wp-content/plugins/` directory, or install the plugin through the WordPress Plugins screen when available.
-2. Activate **WooForge Engine** through the **Plugins** menu in WordPress.
-3. Open the plugin administration settings.
-4. Configure the required email and SMS settings if you intend to use those services.
-5. Implement the required HTML elements in your theme for the front-end features you want to use.
+```text
+WooForgeEngine/
+│
+├── _inc/
+│   ├── function/
+│   ├── meta-box/
+│   ├── setting/
+│   ├── theme-setup/
+│   └── widget/
+│
+├── assets/
+│   ├── admin/
+│   └── front/
+│
+├── class/
+├── helper/
+├── lib/
+├── trait/
+├── utility/
+├── view/
+│   ├── admin/
+│   └── front/
+│
+├── AutoLoadWooForgeEngine.php
+└── CoreWooForgeEngine.php
+```
 
-== Theme Integration ==
+## Requirements
 
-WooForge Engine separates application logic from theme presentation.
+| Requirement | Version |
+|---|---|
+| PHP | 8.0 or higher |
+| WordPress | WordPress installation |
+| WooCommerce | Required for WooCommerce-specific features |
 
-The theme provides the required HTML elements, while the plugin's JavaScript identifies them through predefined IDs and CSS classes and handles the related AJAX requests.
+> WooCommerce is not required for the plugin's general WordPress functionality. It is only needed when using its WooCommerce-specific features.
 
-The current implementation does not rely on shortcodes for these integrations.
+## Installation
 
-= Newsletter Form Example =
+1. Download or clone this repository.
+2. Place the plugin folder containing `CoreWooForgeEngine.php` inside `wp-content/plugins/`.
+3. Open your WordPress dashboard.
+4. Navigate to **Plugins**.
+5. Activate **WooForge Engine**.
 
-Add the following markup to your theme:
+## Theme Integration
 
-<pre>
-<form id="wooen-plugin-newsletter">
-    <input
-        type="email"
-        id="wooen-input-email-newsletter"
-        placeholder="Email address"
-        required
-    >
+WooForge Engine is designed to work alongside custom WordPress themes.
 
-    <button type="submit" id="btn_newsletter">
-        Subscribe
-    </button>
-</form>
-</pre>
+Your theme controls the markup and styling, while the plugin provides the functionality.
 
-The plugin detects these selectors and handles newsletter subscription requests through AJAX.
+For example, a theme can provide a newsletter form using the following selectors:
 
-Keep the required IDs and classes unchanged when implementing the integration.
+| Element | Selector |
+|---|---|
+| Newsletter form | `#wooen-plugin-newsletter` |
+| Email input | `#wooen-input-email-newsletter` |
+| Submit button | `#btn_newsletter` |
 
-== Frequently Asked Questions ==
+The plugin's frontend scripts use these selectors to connect the form to its newsletter functionality.
 
-= Does WooForge Engine require WooCommerce? =
+**Important:** Keep the expected IDs and classes when integrating the supported frontend features into your theme.
 
-WooCommerce is required for WooCommerce-specific features, such as product wishlist functionality and product utility methods. General WordPress features are separate from these integrations.
+## SMS Integration
 
-= Does the plugin use shortcodes? =
+WooForge Engine supports SMS gateway integrations through:
 
-The current front-end integration uses theme-provided HTML elements and predefined JavaScript selectors rather than shortcodes.
+- Melipayamak
+- SMS.ir
 
-= Can I use the plugin with a custom WordPress theme? =
+You can configure the supported gateway and its credentials through the plugin settings.
 
-Yes. Theme developers can add the required HTML markup and selectors to their theme templates.
+SMS services are external services. Using them may transmit phone numbers and message content to the selected provider.
 
-= Which SMS providers are supported? =
+## Development
 
-The current implementation includes integrations for Melipayamak and SMS.ir. An active account and valid credentials from the selected provider are required.
+The project uses an object-oriented structure with reusable classes, helper functions, utilities, and traits.
 
-= Does the plugin send emails? =
+Contributions, bug reports, and suggestions are welcome.
 
-Yes. The plugin uses WordPress email functionality for messages and newsletter notifications. SMTP settings are available for email configuration.
+If you find a problem, please open an issue in the repository with enough information to reproduce it.
 
-= Where can I report bugs or request features? =
+## License
 
-Please use the plugin's GitHub issue tracker:
-https://github.com/mahdi7800/WooForgeEngine/issues
+WooForge Engine is licensed under the **GNU General Public License v2.0 or later**.
 
-== External Services ==
+See the [LICENSE](LICENSE) file for details.
 
-WooForge Engine can connect to external services when the corresponding features are configured and used.
+## Author
 
-= Melipayamak =
+**Mahdi Davoodi**
 
-When the Melipayamak SMS gateway is selected and an SMS operation is performed, the plugin sends SMS-related information, including the recipient phone number and message or verification data, to the Melipayamak API.
+- GitHub: [@mahdi7800](https://github.com/mahdi7800)
+- Repository: [WooForge Engine](https://github.com/mahdi7800/WooForgeEngine)
 
-Service: https://www.melipayamak.com/
+---
 
-= SMS.ir =
-
-When the SMS.ir gateway is selected and an SMS operation is performed, the plugin sends SMS-related information, including the recipient phone number and message or verification data, to the SMS.ir API.
-
-Service: https://sms.ir/
-
-The use of these services is optional and depends on the administrator's configuration.
-
-== Changelog ==
-
-= 1.0.0 =
-* Initial release.
-
-== Upgrade Notice ==
-
-= 1.0.0 =
-Initial release of WooForge Engine.
+<p align="center">
+  <strong>WooForge Engine</strong><br>
+  <sub>Modular functionality. Cleaner WordPress development.</sub>
+</p>
