@@ -1,5 +1,7 @@
 <?php
-$table_newsletter = $this->db->prefix .'wooen_plugin_newsletter';
+global $wpdb;
+ $db=$wpdb;
+$table_newsletter = $db->prefix .'wooen_plugin_newsletter';
 $tns_newsletter = "CREATE TABLE IF NOT EXISTS `$table_newsletter` (
         `ID` int(11) NOT NULL AUTO_INCREMENT,
         `email` varchar(256) NOT NULL,
@@ -11,7 +13,7 @@ $tns_newsletter = "CREATE TABLE IF NOT EXISTS `$table_newsletter` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
 
-$table_banner = $this->db->prefix . 'tns_banner';
+$table_banner = $db->prefix . 'tns_banner';
 $tns_banner = "CREATE TABLE IF NOT EXISTS `$table_banner` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `image_url` varchar(256) NOT NULL,
@@ -21,7 +23,7 @@ $tns_banner = "CREATE TABLE IF NOT EXISTS `$table_banner` (
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
-$table_sliders = $this->db->prefix . 'tns_sliders';
+$table_sliders = $db->prefix . 'tns_sliders';
 $tns_sliders = "CREATE TABLE IF NOT EXISTS `$table_sliders` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `top_title` varchar(256) NOT NULL,
@@ -35,7 +37,7 @@ $tns_sliders = "CREATE TABLE IF NOT EXISTS `$table_sliders` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
 
-$table_wishlist = $this->db->prefix .'tns_wishlist';
+$table_wishlist = $db->prefix .'tns_wishlist';
 $tns_wishlist = "CREATE TABLE IF NOT EXISTS `$table_wishlist` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `p_id` int(11) NOT NULL,
@@ -47,7 +49,7 @@ $tns_wishlist = "CREATE TABLE IF NOT EXISTS `$table_wishlist` (
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
-$table_faq = $this->db->prefix .'tns_faq';
+$table_faq = $db->prefix .'tns_faq';
 $tns_faq = "CREATE TABLE IF NOT EXISTS `$table_faq` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `header` varchar(256) NOT NULL,
@@ -56,7 +58,7 @@ $tns_faq = "CREATE TABLE IF NOT EXISTS `$table_faq` (
    PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
-$table_faq_details = $this->db->prefix .'tns_faq_detail';
+$table_faq_details = $db->prefix .'tns_faq_detail';
 $tns_faq_details = "CREATE TABLE IF NOT EXISTS `$table_faq_details` (
     `ID` int(11) NOT NULL AUTO_INCREMENT,
     `faq_question` varchar(256) NOT NULL,
@@ -67,7 +69,7 @@ $tns_faq_details = "CREATE TABLE IF NOT EXISTS `$table_faq_details` (
     PRIMARY KEY (`ID`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
 
-$table_verify_code = $this->db->prefix . 'wooen_verify_code';
+$table_verify_code = $db->prefix . 'wooen_verify_code';
 $tns_verify_code = "CREATE TABLE IF NOT EXISTS `$table_verify_code` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `verification_code` varchar(6) NOT NULL,
@@ -78,7 +80,7 @@ $tns_verify_code = "CREATE TABLE IF NOT EXISTS `$table_verify_code` (
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 
-$table_token = $this->db->prefix . 'wooen_validate_token';
+$table_token = $db->prefix . 'wooen_validate_token';
 $tns_validate_token = "CREATE TABLE IF NOT EXISTS `$table_token` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `token` varchar(256) NOT NULL,
@@ -91,7 +93,7 @@ $tns_validate_token = "CREATE TABLE IF NOT EXISTS `$table_token` (
         INDEX (`email`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci";
 
-$table_notifications =  $this->db->prefix . 'wooen_notifications';
+$table_notifications =  $db->prefix . 'wooen_notifications';
 $wooen_notifications = "CREATE TABLE IF NOT EXISTS `$table_notifications` (
                                 `id` int(11) NOT NULL,
                                 `title` varchar(256) NOT NULL,
