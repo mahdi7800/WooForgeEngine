@@ -15,10 +15,9 @@
 defined( 'ABSPATH' ) || exit();
 
 Class CoreWooForgeEngine {
-    private $db;
+  
     public  function __construct() {
-        global $wpdb;
-         $this->db = $wpdb;
+
          $this->init();
          $this->define_file();
     }
