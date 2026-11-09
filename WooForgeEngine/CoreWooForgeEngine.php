@@ -79,8 +79,8 @@ Class CoreWooForgeEngine {
         wp_register_style('wooen-bootstrap-icons-css',WOOEN_PLUGIN_URL . 'assets/admin/vendor/bootstrap-icons/bootstrap-icons.css',[],'1.11.1');
         wp_register_style('wooen-apexchart-css',WOOEN_PLUGIN_URL . 'assets/admin/vendor/apexcharts/css/apexcharts.css',[],'1');
         wp_register_style('wooen-quill-snow-css',WOOEN_PLUGIN_URL . 'assets/admin/vendor/quill/css/quill.snow.css',[],'1.3.7');
-        wp_register_style('wooen-uikit-css',WOOEN_PLUGIN_URL . 'assets/admin/css/uikit.css,',[],'5.3.2');
-        wp_register_style('wooen-style-css',WOOEN_PLUGIN_URL . 'assets/admin/css/style.css,',[],'3.25.21');
+        wp_register_style('wooen-uikit-css',WOOEN_PLUGIN_URL . 'assets/admin/css/uikit.css',[],'5.3.2');
+        wp_register_style('wooen-style-css',WOOEN_PLUGIN_URL . 'assets/admin/css/style.css',[],'3.25.21');
 
         wp_enqueue_style('wooen-uikit-css');
         wp_enqueue_style('wooen-font-awesome-css');
