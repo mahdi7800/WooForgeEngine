@@ -120,7 +120,6 @@ Class CoreWooForgeEngine {
 new CoreWooForgeEngine();
 new Newsletter();
 new Auth();
-new Notification ();
 new Banner();
 new Slider();
 new Faq();
