@@ -470,5 +470,33 @@ class utility
     }
     }
 
+ public static function wooen_calculator_age(string $date): int
+    {
+        $birth_date = new DateTime($date);
+        $today = new DateTime('today');
+        $age = $birth_date->diff($today);
+        return $age->y;
+    }
+
+    public static function wooen_create_full_name(string $first_name , string $last_name): string {
+        return trim($first_name . ' ' . $last_name);
+    }
+
+    public static function wooen_create_position(int $position): string {
+        $result = '';
+            switch ($position) {
+                case 0:
+                     $result = 'مدیریت';
+                    break;
+                case 1:
+                     $result ='برنامه‌نویس';
+                    break;
+                default:
+                     $result ='نامشخص';
+                    break;
+            }
+        return  $result;
+    }
+
     
 }
