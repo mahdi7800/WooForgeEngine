@@ -144,6 +144,15 @@ function wooen_register_menu(): void
             'shw_wishlist_setting_list_layout'
         );
         */
+
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت تیم ما',
+            'مدیریت تیم ما',
+            'manage_options',
+            'setting_shop_tab_ten',
+            'setting_shop_layout'
+        );
     }else{
         add_menu_page(
             'Theme Settings',
@@ -266,7 +275,17 @@ function wooen_register_menu(): void
 //        'shw_wishlist_setting_list_layout',
 //        ''
 //    );
+        add_submenu_page(
+            'setting_shop',
+            'مدیریت تیم ما',
+            'مدیریت تیم ما',
+            'manage_options',
+            'setting_shop_tab_ten',
+            'setting_shop_layout'
+        );
     }
+
+
 }
 
 
@@ -373,71 +392,63 @@ function setting_shop_layout()
                     </a>
 
                 <?php endif; ?>
-
+                <a href="?page=setting_shop_tab_ten" class="nav-tab <?php echo $tab === 'tab_ten' ? 'nav-tab-active' : ''; ?>"
+                >مدیریت تیم ما
+                </a>
             </h1>
         <?php else : ?>
-        <h1 class="nav-tab-wrapper">
+            <h1 class="nav-tab-wrapper">
 
-            <a href="?page=setting_shop_tab_one"
-               class="nav-tab <?php echo $tab === 'tab_one' ? 'nav-tab-active' : ''; ?>">
-                General Settings
-            </a>
-
-
-            <a href="?page=setting_shop_tab_two"
-               class="nav-tab <?php echo $tab === 'tab_two' ? 'nav-tab-active' : ''; ?>">
-                Slider Settings
-            </a>
-
-
-            <a href="?page=setting_shop_tab_three"
-               class="nav-tab <?php echo $tab === 'tab_three' ? 'nav-tab-active' : ''; ?>">
-                Banner Management
-            </a>
-
-
-            <a href="?page=setting_shop_tab_four"
-               class="nav-tab <?php echo $tab === 'tab_four' ? 'nav-tab-active' : ''; ?>">
-                Contact Us
-            </a>
-
-
-            <a href="?page=setting_shop_tab_five"
-               class="nav-tab <?php echo $tab === 'tab_five' ? 'nav-tab-active' : ''; ?>">
-                Social Media
-            </a>
-
-
-            <a href="?page=setting_shop_tab_six"
-               class="nav-tab <?php echo $tab === 'tab_six' ? 'nav-tab-active' : ''; ?>">
-                Frequently Asked Questions (FAQ)
-            </a>
-
-            <?php if ($new_setting === 'yes'): ?>
-            <a href="?page=setting_shop_tab_seven"
-               class="nav-tab <?php echo $tab === 'tab_eight' ? 'nav-tab-active' : ''; ?>">
-                Newsletter Management
-            </a>
-    <?php endif; ?>
-
-<!--            <a href="?page=setting_shop_tab_eight"-->
-<!--               class="nav-tab --><?php //echo $tab === 'tab_eight' ? 'nav-tab-active' : ''; ?><!--">-->
-<!--                Notice Management-->
-<!--            </a>-->
-
-            <?php if ($sms_setting === 'yes') { ?>
-
-                <a href="?page=setting_shop_tab_nine"
-                   class="nav-tab <?php echo $tab === 'tab_seven' ? 'nav-tab-active' : ''; ?>">
-                    SMS Settings
+                <a href="?page=setting_shop_tab_one"
+                   class="nav-tab <?php echo $tab === 'tab_one' ? 'nav-tab-active' : ''; ?>">
+                    General Settings
                 </a>
 
-            <?php } ?>
+                <a href="?page=setting_shop_tab_two"
+                   class="nav-tab <?php echo $tab === 'tab_two' ? 'nav-tab-active' : ''; ?>">
+                    Slider Settings
+                </a>
 
+                <a href="?page=setting_shop_tab_three"
+                   class="nav-tab <?php echo $tab === 'tab_three' ? 'nav-tab-active' : ''; ?>">
+                    Banner Management
+                </a>
 
+                <a href="?page=setting_shop_tab_four"
+                   class="nav-tab <?php echo $tab === 'tab_four' ? 'nav-tab-active' : ''; ?>">
+                    Contact Us
+                </a>
 
+                <a href="?page=setting_shop_tab_five"
+                   class="nav-tab <?php echo $tab === 'tab_five' ? 'nav-tab-active' : ''; ?>">
+                    Social Media
+                </a>
 
-        </h1>
+                <a href="?page=setting_shop_tab_six"
+                   class="nav-tab <?php echo $tab === 'tab_six' ? 'nav-tab-active' : ''; ?>">
+                    Frequently Asked Questions (FAQ)
+                </a>
+
+                <?php if ($new_setting === 'yes'): ?>
+                    <a href="?page=setting_shop_tab_seven"
+                       class="nav-tab <?php echo $tab === 'tab_seven' ? 'nav-tab-active' : ''; ?>">
+                        Newsletter Management
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($sms_setting === 'yes'): ?>
+                    <a href="?page=setting_shop_tab_nine"
+                       class="nav-tab <?php echo $tab === 'tab_nine' ? 'nav-tab-active' : ''; ?>">
+                        SMS Settings
+                    </a>
+                <?php endif; ?>
+
+                <a href="?page=setting_shop_tab_ten"
+                   class="nav-tab <?php echo $tab === 'tab_ten' ? 'nav-tab-active' : ''; ?>">
+                    Our Team Management
+                </a>
+
+            </h1>
 <?php endif; ?>
 
         <div class="tab-content" style="margin-top: 20px;">
@@ -484,6 +495,9 @@ function setting_shop_layout()
                     break;
                 case 'tab_nine':
                     tnm_setting_sms_layout();
+                    break;
+                case 'tab_ten':
+                    tnm_team_our_html_layout();
                     break;
 
 
@@ -553,8 +567,14 @@ function tnm_setting_slider_html_layout()
     require_once WOOEN_PLUGIN_DIR . 'view/admin/setting/slider-setting-html-layout.php';
 }
 
-function tnm_setting_notice_html_layout() {
+function tnm_setting_notice_html_layout(): void
+{
     require_once WOOEN_PLUGIN_DIR . 'view/admin/setting/notice-setting-html-layout.php';
+}
+
+function tnm_team_our_html_layout(): void
+{
+    require_once WOOEN_PLUGIN_DIR . 'view/admin/setting/team-our-html-layout.php';
 }
 
 
